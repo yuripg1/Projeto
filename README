@@ -1,0 +1,44 @@
+Temos a seguinte estrutura:
+
+struct JOGO{
+	int *tabuleiro;
+	int ultimaJogada;
+	int penultimaJogada;
+	int antepenultimaJogada;
+	int corAtual;
+	int corJogador;
+	int profundidadeMinimax;
+	int jogadasFeitas;
+	int podeDesfazer;
+};
+
+O tabuleiro é um vetor de 61 inteiros com um dos três estados:
+VAZIO	- Está vazio
+BRANCO	- Contém uma peça branca
+PRETO	- Contém uma perça preta
+
+O trabalho será basicamente nos arquivos "inteligenciaArtificial.c" e "inteligenciaArtificial.h", a partir da função "jogadaComputador()".
+Esta função deverá retornar um inteiro entre 0 e 60 referente a posição no tabuleiro que o computador vai jogar.
+Será a partir dela que faremos todo o processamento da melhor jogada possível, chamando um minimax com corte alfa-beta provavelmente.
+
+Uma função muito importante a ser usada no minimax já está pronta.
+É a "fimDeJogo()"
+Ela recebe o estado do jogo e retorna um dos seguintes valores
+NAO - Quando o jogo ainda tem continuação
+VITORIA_BRANCO	- Quando o jogador com as peças brancas vence
+VITORIA_PRETO	- Quando o jogador com as peças pretas vence
+EMPATE			- Quando ocorre um empate com o tabuleiro cheio
+
+Também há a função "jogadaValida", que retorna:
+SIM	- Posição está vazia e a jogada pode ser feita para preenchê-la
+NAO	- Posição já está ocupada e a jogada para preenchê-la não será possível
+
+O jogador ganhará se:
+1. "fimDeJogo()" retornar VITORIA_BRANCO E "jogo->corJogador" valer BRANCO
+OU
+2. "fimDeJogo()" retornar VITORIA_PRETO E "jogo->corJogador" valer PRETO
+
+Da mesma forma, perderá se:
+1. "fimDeJogo()" retornar VITORIA_BRANCO E "jogo->corJogador valer PRETO
+OU
+2. "fimDeJogo()" retornar VITORIA_PRETO E "jogo->corJogador" valer BRANCO
