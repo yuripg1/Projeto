@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include "desenhoTabuleiro.h"
 #include "inteligenciaArtificial.h"
-#include "processamentoJogadas.h"
 #include "jogo.h"
 void jogo(){
 	int acabou=NAO,tecla,estadoJogo,posicao,novaPosicao,escolhaFeita,teclaValida;
@@ -13,11 +12,11 @@ void jogo(){
 	jogo->profundidadeMinimax=profundidadeMinimax(jogo);
 	escreveComandos();
 	while(acabou==NAO){
-		estadoJogo=fimDeJogo(jogo);
+		estadoJogo=fimDeJogo(jogo->tabuleiro,jogo->jogadasFeitas);
 		while(estadoJogo==NAO){
-			jogadorRodada(jogo);
+			jogadorRodada(jogo->corAtual);
 			if(jogo->corJogador==jogo->corAtual){
-				posicao=primeiroVazio(jogo);
+				posicao=primeiroVazio(jogo->tabuleiro);
 				escolhaFeita=NAO;
 				while(escolhaFeita==NAO){
 					poeFoco(posicao);
@@ -36,7 +35,7 @@ void jogo(){
 						tecla=getch();
 						if(tecla==SETA_ESQUERDA){
 							novaPosicao=posicao-1;
-							while((jogadaValida(jogo,novaPosicao)==NAO)&&(novaPosicao>(-1))){
+							while((jogadaValida(jogo->tabuleiro,novaPosicao)==NAO)&&(novaPosicao>(-1))){
 								novaPosicao--;
 							}
 							if(novaPosicao!=(-1)){
@@ -47,7 +46,7 @@ void jogo(){
 						}
 						if(tecla==SETA_DIREITA){
 							novaPosicao=posicao+1;
-							while((jogadaValida(jogo,novaPosicao)==NAO)&&(novaPosicao<61)){
+							while((jogadaValida(jogo->tabuleiro,novaPosicao)==NAO)&&(novaPosicao<61)){
 								novaPosicao++;
 							}
 							if(novaPosicao!=61){
@@ -60,11 +59,11 @@ void jogo(){
 				}
 			}
 			else{
-				processaJogada(jogo,jogadaComputador(jogo));
+				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->ultimaJogada,jogo->penultimaJogada,jogo->corAtual,jogo->corJogador,jogo->profundidadeMinimax,jogo->jogadasFeitas));
 			}
-			estadoJogo=fimDeJogo(jogo);
+			estadoJogo=fimDeJogo(jogo->tabuleiro,jogo->jogadasFeitas);
 		}
-		jogadorRodada(jogo);
+		jogadorRodada(jogo->corAtual);
 		textbackground(DARKGRAY);
 		textcolor(BLACK);
 		if(estadoJogo==EMPATE){
@@ -218,16 +217,16 @@ void escreveComandos(){
 	cputsxy(41,10,"[D] - Desfazer jogada");
 	gotoxy(1,1);
 }
-void jogadorRodada(struct JOGO *jogo){
+void jogadorRodada(int corAtual){
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
 	cputsxy(41,12,"Jogador da rodada:");
-	if(jogo->corAtual==BRANCO){
+	if(corAtual==BRANCO){
 		cputsxy(41,13,"Branco ");
 		textbackground(WHITE);
 		cputsxy(48,13,"   ");
 	}
-	if(jogo->corAtual==PRETO){
+	if(corAtual==PRETO){
 		cputsxy(41,13,"Preto ");
 		textbackground(BLACK);
 		cputsxy(47,13,"   ");
@@ -236,9 +235,9 @@ void jogadorRodada(struct JOGO *jogo){
 	}
 	gotoxy(1,1);
 }
-int primeiroVazio(struct JOGO *jogo){
+int primeiroVazio(int *tabuleiro){
 	int posicao=0;
-	while(jogadaValida(jogo,posicao)==NAO){
+	while(jogadaValida(tabuleiro,posicao)==NAO){
 		posicao++;
 	}
 	return posicao;
@@ -247,4 +246,320 @@ struct JOGO *finalizaJogo(struct JOGO *jogo){
 	free(jogo->tabuleiro);
 	free(jogo);
 	return NULL;
+}
+void processaJogada(struct JOGO *jogo,int jogada){
+	jogo->tabuleiro[jogada]=jogo->corAtual;
+	desenhaJogada(jogada,jogo->corAtual,jogo->ultimaJogada);
+	jogo->antepenultimaJogada=jogo->penultimaJogada;
+	jogo->penultimaJogada=jogo->ultimaJogada;
+	jogo->ultimaJogada=jogada;
+	jogo->jogadasFeitas++;
+	if(jogo->corJogador==jogo->corAtual){
+		jogo->podeDesfazer=SIM;
+	}
+	switch(jogo->corAtual){
+		case BRANCO:	jogo->corAtual=PRETO;
+						break;
+		case PRETO:		jogo->corAtual=BRANCO;
+						break;
+	}
+}
+void desfazJogadas(struct JOGO *jogo){
+	jogo->tabuleiro[jogo->ultimaJogada]=VAZIO;
+	jogo->tabuleiro[jogo->penultimaJogada]=VAZIO;
+	desenhaDesfazer(jogo->ultimaJogada,jogo->penultimaJogada,jogo->antepenultimaJogada);
+	jogo->ultimaJogada=jogo->antepenultimaJogada;
+	jogo->penultimaJogada=SEM_JOGADA;
+	jogo->antepenultimaJogada=SEM_JOGADA;
+	jogo->jogadasFeitas-=2;
+	jogo->podeDesfazer=NAO;
+}
+void desfazUmaJogada(struct JOGO *jogo){
+	jogo->tabuleiro[jogo->ultimaJogada]=VAZIO;
+	desenhaMeioDesfazer(jogo->ultimaJogada,jogo->penultimaJogada);
+	jogo->ultimaJogada=jogo->penultimaJogada;
+	jogo->penultimaJogada=jogo->antepenultimaJogada;
+	jogo->antepenultimaJogada=SEM_JOGADA;
+	jogo->jogadasFeitas--;
+	jogo->podeDesfazer=NAO;
+	switch(jogo->corAtual){
+		case BRANCO:	jogo->corAtual=PRETO;
+						break;
+		case PRETO:		jogo->corAtual=BRANCO;
+						break;
+	}
+}
+int temVizinho1(int *tabuleiro,int posicao){
+	int vizinho;
+	if((posicao==4)||(posicao==10)||(posicao==17)||(posicao==25)||(posicao==34)||(posicao==42)||(posicao==49)||(posicao==55)||(posicao==60)){
+		return SEM_VIZINHO;
+	}
+	vizinho=posicao+1;
+	if(tabuleiro[posicao]==tabuleiro[vizinho]){
+		return vizinho;
+	}
+	return SEM_VIZINHO;
+}
+int temVizinho2(int *tabuleiro,int posicao){
+	int vizinho;
+	if((posicao<5)||(posicao==10)||(posicao==17)||(posicao==25)||(posicao==34)){
+		return SEM_VIZINHO;
+	}
+	if((posicao>25)&&(posicao<43)){
+		vizinho=posicao-8;
+	}
+	else{
+		if((posicao>17)&&(posicao<50)){
+			vizinho=posicao-7;
+		}
+		else{
+			if((posicao>10)&&(posicao<56)){
+				vizinho=posicao-6;
+			}
+			else{
+				vizinho=posicao-5;
+			}
+		}
+	}
+	if(tabuleiro[posicao]==tabuleiro[vizinho]){
+		return vizinho;
+	}
+	return SEM_VIZINHO;
+}
+int temVizinho3(int *tabuleiro,int posicao){
+	int vizinho;
+	if((posicao==34)||(posicao==42)||(posicao==49)||(posicao>54)){
+		return SEM_VIZINHO;
+	}
+	if((posicao>17)&&(posicao<35)){
+		vizinho=posicao+9;
+	}
+	else{
+		if((posicao>10)&&(posicao<43)){
+			vizinho=posicao+8;
+		}
+		else{
+			if((posicao>4)&&(posicao<50)){
+				vizinho=posicao+7;
+			}
+			else{
+				vizinho=posicao+6;
+			}
+		}
+	}
+	if(tabuleiro[posicao]==tabuleiro[vizinho]){
+		return vizinho;
+	}
+	return SEM_VIZINHO;
+}
+int formaSequencia1(int *tabuleiro,int posicao){
+	int numeroVizinhos=1,vizinho;
+	vizinho=temVizinho1(tabuleiro,posicao);
+	while(vizinho!=SEM_VIZINHO){
+		numeroVizinhos++;
+		vizinho=temVizinho1(tabuleiro,vizinho);
+	}
+	if(numeroVizinhos==3){
+		if(tabuleiro[posicao]==PRETO){
+			return VITORIA_BRANCO;
+		}
+		return VITORIA_PRETO;
+	}
+	if(numeroVizinhos==4){
+		return tabuleiro[posicao];
+	}
+	return NAO;
+}
+int formaSequencia2(int *tabuleiro,int posicao){
+	int numeroVizinhos=1,vizinho;
+	vizinho=temVizinho2(tabuleiro,posicao);
+	while(vizinho!=SEM_VIZINHO){
+		numeroVizinhos++;
+		vizinho=temVizinho2(tabuleiro,vizinho);
+	}
+	if(numeroVizinhos==3){
+		if(tabuleiro[posicao]==PRETO){
+			return VITORIA_BRANCO;
+		}
+		return VITORIA_PRETO;
+	}
+	if(numeroVizinhos==4){
+		return tabuleiro[posicao];
+	}
+	return NAO;
+}
+int formaSequencia3(int *tabuleiro,int posicao){
+	int numeroVizinhos=1,vizinho;
+	vizinho=temVizinho3(tabuleiro,posicao);
+	while(vizinho!=SEM_VIZINHO){
+		numeroVizinhos++;
+		vizinho=temVizinho3(tabuleiro,vizinho);
+	}
+	if(numeroVizinhos==3){
+		if(tabuleiro[posicao]==PRETO){
+			return VITORIA_BRANCO;
+		}
+		return VITORIA_PRETO;
+	}
+	if(numeroVizinhos==4){
+		return tabuleiro[posicao];
+	}
+	return NAO;
+}
+int fimDeJogo(int *tabuleiro,int jogadasFeitas){
+	int i,sequencia;
+	for(i=0;i<3;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=5;i<9;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=11;i<16;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=18;i<24;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=26;i<33;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=35;i<41;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=43;i<48;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=50;i<54;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=56;i<59;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=11;i<16;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia2(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=18;i<24;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia2(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=26;i<33;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia2(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=35;i<42;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia2(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=43;i<61;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia2(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=0;i<25;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia3(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=26;i<33;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia3(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=35;i<41;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia3(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	for(i=43;i<48;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia3(tabuleiro,i);
+			if(sequencia!=NAO){
+				return sequencia;
+			}
+		}
+	}
+	if(jogadasFeitas==61){
+		return EMPATE;
+	}
+	return NAO;
+}
+int jogadaValida(int *tabuleiro,int jogada){
+	if(tabuleiro[jogada]==VAZIO){
+		return SIM;
+	}
+	return NAO;
 }
