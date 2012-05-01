@@ -83,15 +83,15 @@ void jogo(){
 			if(((tecla=='d')||(tecla=='D'))){
 				if(jogo->jogadasFeitas==61){
 					if(jogo->corJogador==PRETO){
-						cputsxy(41,15,"                                 ");
-						cputsxy(41,16,"                        ");
+						cputsxy(41,17,"                                 ");
+						cputsxy(41,18,"                        ");
 						desfazJogadas(jogo);
 						teclaValida=SIM;
 					}
 				}
 				else{
-					cputsxy(41,15,"                                 ");
-					cputsxy(41,16,"                        ");
+					cputsxy(41,17,"                                 ");
+					cputsxy(41,18,"                        ");
 					if(jogo->corAtual!=jogo->corJogador){
 						desfazUmaJogada(jogo);
 					}

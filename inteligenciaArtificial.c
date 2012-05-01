@@ -10,7 +10,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	for(i=0;i<61;i++){
 		if(jogadaValida(tabuleiro,i)==SIM){
 			tabuleiro[i]=corComputador;
-			resultado=(int)(minimax(tabuleiro,(char)(profundidadeMinimax-1),(char)(corComputador),(char)(jogadasFeitas+1)));
+			resultado=(int)(minimax(tabuleiro,(char)(profundidadeMinimax-1),(char)(corComputador),(char)(jogadasFeitas+1),(char)(melhorResultado)));
 			if(resultado>melhorResultado){
 				melhorResultado=resultado;
 				proximaJogada=i;
@@ -25,7 +25,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	printf("Tempo de raciocinio: %1.3f",((float)(fimMinimax-inicioMinimax))/((float)CLOCKS_PER_SEC));
 	return proximaJogada;
 }
-char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFeitas){
+char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFeitas,char alfaBeta){
 	char i,resultado,melhorResultado,cor,max,primeiroResultado;
 
 	// Verifica se o jogo acaba com algum resultado ou se continua
@@ -55,7 +55,16 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 				max=NAO;
 			}
 
-			for(i=0;i<61;i++){
+			i=0;
+			while(i<61){
+
+				// Realização da poda alfa-beta
+				if((max==NAO)&&(melhorResultado<alfaBeta)){
+					i=61;
+				}
+				if((max==SIM)&&(melhorResultado>alfaBeta)){
+					i=61;
+				}
 
 				// Verifica se é possível jogar em determinada posição
 				if(jogadaValida(tabuleiro,i)==SIM){
@@ -64,7 +73,7 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 					tabuleiro[(int)(i)]=cor;
 
 					// Aplica o minimax para esta sub-jogada
-					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1);
+					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
 
 					// Calcula o MIN ou o MAX (dependendo do nível)
 					if(max==NAO){
@@ -82,6 +91,8 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 					tabuleiro[(int)(i)]=VAZIO;
 
 				}
+
+				i++;
 			}
 
 			// Retorna o MIN ou o MAX calculado acima
