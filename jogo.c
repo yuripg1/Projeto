@@ -12,8 +12,8 @@ void jogo(){
 	jogo->profundidadeMinimax=profundidadeMinimax(jogo);
 	escreveComandos();
 	while(acabou==NAO){
-		estadoJogo=fimDeJogo(jogo->tabuleiro,jogo->jogadasFeitas);
-		while(estadoJogo==NAO){
+		estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador,jogo->jogadasFeitas);
+		while(estadoJogo==CONTINUA){
 			jogadorRodada(jogo->corAtual);
 			if(jogo->corJogador==jogo->corAtual){
 				posicao=primeiroVazio(jogo->tabuleiro);
@@ -59,9 +59,9 @@ void jogo(){
 				}
 			}
 			else{
-				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->ultimaJogada,jogo->penultimaJogada,jogo->corAtual,jogo->corJogador,jogo->profundidadeMinimax,jogo->jogadasFeitas));
+				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->corAtual,jogo->profundidadeMinimax,jogo->jogadasFeitas));
 			}
-			estadoJogo=fimDeJogo(jogo->tabuleiro,jogo->jogadasFeitas);
+			estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador,jogo->jogadasFeitas);
 		}
 		jogadorRodada(jogo->corAtual);
 		textbackground(DARKGRAY);
@@ -69,10 +69,10 @@ void jogo(){
 		if(estadoJogo==EMPATE){
 			cputsxy(41,15,"O jogo acabou em empate!");
 		}
-		if(((estadoJogo==VITORIA_PRETO)&&(jogo->corJogador==PRETO))||((estadoJogo==VITORIA_BRANCO)&&(jogo->corJogador==BRANCO))){
+		if(estadoJogo==VITORIA){
 			cputsxy(41,15,"Voce ganhou! O computador perdeu!");
 		}
-		if(((estadoJogo==VITORIA_PRETO)&&(jogo->corJogador==BRANCO))||((estadoJogo==VITORIA_BRANCO)&&(jogo->corJogador==PRETO))){
+		if(estadoJogo==DERROTA){
 			cputsxy(41,15,"Voce perdeu! O computador ganhou!");
 		}
 		cputsxy(41,16,"Pressione ESC para sair.");
@@ -235,13 +235,6 @@ void jogadorRodada(int corAtual){
 	}
 	gotoxy(1,1);
 }
-int primeiroVazio(int *tabuleiro){
-	int posicao=0;
-	while(jogadaValida(tabuleiro,posicao)==NAO){
-		posicao++;
-	}
-	return posicao;
-}
 struct JOGO *finalizaJogo(struct JOGO *jogo){
 	free(jogo->tabuleiro);
 	free(jogo);
@@ -288,278 +281,4 @@ void desfazUmaJogada(struct JOGO *jogo){
 		case PRETO:		jogo->corAtual=BRANCO;
 						break;
 	}
-}
-int temVizinho1(int *tabuleiro,int posicao){
-	int vizinho;
-	if((posicao==4)||(posicao==10)||(posicao==17)||(posicao==25)||(posicao==34)||(posicao==42)||(posicao==49)||(posicao==55)||(posicao==60)){
-		return SEM_VIZINHO;
-	}
-	vizinho=posicao+1;
-	if(tabuleiro[posicao]==tabuleiro[vizinho]){
-		return vizinho;
-	}
-	return SEM_VIZINHO;
-}
-int temVizinho2(int *tabuleiro,int posicao){
-	int vizinho;
-	if((posicao<5)||(posicao==10)||(posicao==17)||(posicao==25)||(posicao==34)){
-		return SEM_VIZINHO;
-	}
-	if((posicao>25)&&(posicao<43)){
-		vizinho=posicao-8;
-	}
-	else{
-		if((posicao>17)&&(posicao<50)){
-			vizinho=posicao-7;
-		}
-		else{
-			if((posicao>10)&&(posicao<56)){
-				vizinho=posicao-6;
-			}
-			else{
-				vizinho=posicao-5;
-			}
-		}
-	}
-	if(tabuleiro[posicao]==tabuleiro[vizinho]){
-		return vizinho;
-	}
-	return SEM_VIZINHO;
-}
-int temVizinho3(int *tabuleiro,int posicao){
-	int vizinho;
-	if((posicao==34)||(posicao==42)||(posicao==49)||(posicao>54)){
-		return SEM_VIZINHO;
-	}
-	if((posicao>17)&&(posicao<35)){
-		vizinho=posicao+9;
-	}
-	else{
-		if((posicao>10)&&(posicao<43)){
-			vizinho=posicao+8;
-		}
-		else{
-			if((posicao>4)&&(posicao<50)){
-				vizinho=posicao+7;
-			}
-			else{
-				vizinho=posicao+6;
-			}
-		}
-	}
-	if(tabuleiro[posicao]==tabuleiro[vizinho]){
-		return vizinho;
-	}
-	return SEM_VIZINHO;
-}
-int formaSequencia1(int *tabuleiro,int posicao){
-	int numeroVizinhos=1,vizinho;
-	vizinho=temVizinho1(tabuleiro,posicao);
-	while(vizinho!=SEM_VIZINHO){
-		numeroVizinhos++;
-		vizinho=temVizinho1(tabuleiro,vizinho);
-	}
-	if(numeroVizinhos==3){
-		if(tabuleiro[posicao]==PRETO){
-			return VITORIA_BRANCO;
-		}
-		return VITORIA_PRETO;
-	}
-	if(numeroVizinhos==4){
-		return tabuleiro[posicao];
-	}
-	return NAO;
-}
-int formaSequencia2(int *tabuleiro,int posicao){
-	int numeroVizinhos=1,vizinho;
-	vizinho=temVizinho2(tabuleiro,posicao);
-	while(vizinho!=SEM_VIZINHO){
-		numeroVizinhos++;
-		vizinho=temVizinho2(tabuleiro,vizinho);
-	}
-	if(numeroVizinhos==3){
-		if(tabuleiro[posicao]==PRETO){
-			return VITORIA_BRANCO;
-		}
-		return VITORIA_PRETO;
-	}
-	if(numeroVizinhos==4){
-		return tabuleiro[posicao];
-	}
-	return NAO;
-}
-int formaSequencia3(int *tabuleiro,int posicao){
-	int numeroVizinhos=1,vizinho;
-	vizinho=temVizinho3(tabuleiro,posicao);
-	while(vizinho!=SEM_VIZINHO){
-		numeroVizinhos++;
-		vizinho=temVizinho3(tabuleiro,vizinho);
-	}
-	if(numeroVizinhos==3){
-		if(tabuleiro[posicao]==PRETO){
-			return VITORIA_BRANCO;
-		}
-		return VITORIA_PRETO;
-	}
-	if(numeroVizinhos==4){
-		return tabuleiro[posicao];
-	}
-	return NAO;
-}
-int fimDeJogo(int *tabuleiro,int jogadasFeitas){
-	int i,sequencia;
-	for(i=0;i<3;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=5;i<9;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=11;i<16;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=18;i<24;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=26;i<33;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=35;i<41;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=43;i<48;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=50;i<54;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=56;i<59;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=11;i<16;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia2(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=18;i<24;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia2(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=26;i<33;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia2(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=35;i<42;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia2(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=43;i<61;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia2(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=0;i<25;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia3(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=26;i<33;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia3(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=35;i<41;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia3(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	for(i=43;i<48;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia3(tabuleiro,i);
-			if(sequencia!=NAO){
-				return sequencia;
-			}
-		}
-	}
-	if(jogadasFeitas==61){
-		return EMPATE;
-	}
-	return NAO;
-}
-int jogadaValida(int *tabuleiro,int jogada){
-	if(tabuleiro[jogada]==VAZIO){
-		return SIM;
-	}
-	return NAO;
 }

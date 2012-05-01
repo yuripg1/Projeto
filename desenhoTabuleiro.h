@@ -1,11 +1,7 @@
 #ifndef DESENHO_TABULEIRO_H
 #define DESENHO_TABULEIRO_H
-#ifndef BRANCO
 #define BRANCO 1
-#endif
-#ifndef PRETO
 #define PRETO 2
-#endif
 #define SEM_JOGADA (-1)
 void limpaTela();
 void desenhaTabuleiro();
