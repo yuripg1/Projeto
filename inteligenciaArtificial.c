@@ -5,7 +5,7 @@
 #include "desenhoTabuleiro.h"
 #include "inteligenciaArtificial.h"
 int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,int jogadasFeitas){
-	int proximaJogada=(-1),resultado,melhorResultado=(-1),i,jogadasPossiveis[61],numeroJogadasPossiveis=1;
+	int proximaJogada=(-1),resultado,melhorResultado=ALFA,i,jogadasPossiveis[61],numeroJogadasPossiveis=1;
 	clock_t inicioMinimax,fimMinimax;
 
 	// Grava o tempo de início do raciocínio
@@ -20,7 +20,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 			tabuleiro[i]=corComputador;
 
 			// Aplica o minimax para esta sub-jogada
-			resultado=(int)(minimax(tabuleiro,(char)(profundidadeMinimax-1),(char)(corComputador),(char)(jogadasFeitas+1),(char)(melhorResultado)));
+			resultado=minimax(tabuleiro,profundidadeMinimax-1,corComputador,jogadasFeitas+1,melhorResultado);
 
 			// Calcula o MAX (e a candidata a próxima jogada)
 			if(resultado>melhorResultado){
@@ -57,11 +57,11 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	// Retorna qual deverá ser a próxima jogada
 	return proximaJogada;
 }
-char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFeitas,char alfaBeta){
-	char i=0,resultado,melhorResultado,cor,max,primeiroResultado;
+int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfaBeta){
+	int i=0,resultado,melhorResultado,cor,max,primeiroResultado;
 
-	// Verifica se o jogo acaba com algum resultado ou se continua
-	primeiroResultado=(char)(resultadoJogo(tabuleiro,(int)(corComputador),(int)(jogadasFeitas)));
+	// Calcula o resultado do estado atual do tabuleiro
+	primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas);
 
 	// verifica se o jogo continua
 	if(primeiroResultado==CONTINUA){
@@ -79,11 +79,11 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 
 			// Verifica se este nível fará MIN ou MAX
 			if(cor==corComputador){
-				melhorResultado=(-1);
+				melhorResultado=ALFA;
 				max=SIM;
 			}
 			else{
-				melhorResultado=4;
+				melhorResultado=BETA;
 				max=NAO;
 			}
 
@@ -101,7 +101,7 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 				if(jogadaValida(tabuleiro,i)==SIM){
 
 					// Efetua sub-jogada
-					tabuleiro[(int)(i)]=cor;
+					tabuleiro[i]=cor;
 
 					// Aplica o minimax para esta sub-jogada
 					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
@@ -119,7 +119,7 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 					}
 
 					// Restaura estado original do tabuleiro
-					tabuleiro[(int)(i)]=VAZIO;
+					tabuleiro[i]=VAZIO;
 
 				}
 
@@ -133,9 +133,23 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 
 	}
 
-	// Retorna o resultado do tabuleiro
+	// Dá mais peso para vitórias e derrotas mais próximas (com menos jogadas)
+	if(resultadoBom(primeiroResultado)==SIM){
+		primeiroResultado+=profundidade;
+	}
+	else{
+		primeiroResultado-=profundidade;
+	}
+
+	// Retorna o resultado do estado atual do tabuleiro
 	return primeiroResultado;
 
+}
+int resultadoBom(int resultado){
+	if(resultado>CONTINUA){
+		return SIM;
+	}
+	return NAO;
 }
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;

@@ -24,7 +24,7 @@ Será a partir dela que faremos todo o processamento da melhor jogada possível, c
 
 Uma função muito importante a ser usada no minimax já está pronta.
 É a "resultadoJogo()"
-Ela recebe o estado do jogo e retorna um dos seguintes valores
+Ela recebe o tabuleiro, a cor a ser avaliada e o numero de jogadas feitas e retorna um dos seguintes valores:
 DERROTA		- Quando o jogador em avaliação perde
 EMPATE		- Quando ocorre um empate com o tabuleiro cheio
 CONTINUA	- Quando não há resultado e o jogo ainda tem continuação
@@ -33,3 +33,6 @@ VITORIA		- Quando o jogador em avaliação ganha
 Também há a função "jogadaValida()", que retorna:
 SIM	- Posição está vazia e a jogada pode ser feita para preenchê-la
 NAO	- Posição já está ocupada e a jogada para preenchê-la não será possível
+
+A função "jogadaComputador()" já implementa o algoritmo minimax (da função "minimax()).
+O minimax já tem implementada a poda alfa-beta
