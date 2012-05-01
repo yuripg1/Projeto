@@ -8,7 +8,6 @@
 #define EMPATE 1
 #define CONTINUA 2
 #define VITORIA 3
-#define SEM_ALFA_BETA (-1)
 int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,int jogadasFeitas);
 char minimax(int *tabuleiro,char profundidade,char corAtual,char jogadasFeitas,char alfaBeta);
 int primeiroVazio(int *tabuleiro);
