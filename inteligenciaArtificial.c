@@ -275,7 +275,23 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 			}
 		}
 	}
-	for(i=43;i<61;i++){
+	for(i=56;i<61;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia2(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				return sequencia;
+			}
+		}
+	}
+	for(i=50;i<56;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia2(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				return sequencia;
+			}
+		}
+	}
+	for(i=43;i<50;i++){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia2(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
@@ -284,6 +300,14 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		}
 	}
 	for(i=35;i<42;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia2(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				return sequencia;
+			}
+		}
+	}
+	for(i=26;i<33;i++){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia2(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
