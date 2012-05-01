@@ -1,10 +1,11 @@
 #include <conio2.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include "desenhoTabuleiro.h"
 #include "inteligenciaArtificial.h"
 int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,int jogadasFeitas){
-	int proximaJogada=(-1),resultado,melhorResultado=(-1),i;
+	int proximaJogada=(-1),resultado,melhorResultado=(-1),i,jogadasPossiveis[61],numeroJogadasPossiveis=1;
 	clock_t inicioMinimax,fimMinimax;
 
 	// Grava o tempo de início do raciocínio
@@ -21,10 +22,17 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 			// Aplica o minimax para esta sub-jogada
 			resultado=(int)(minimax(tabuleiro,(char)(profundidadeMinimax-1),(char)(corComputador),(char)(jogadasFeitas+1),(char)(melhorResultado)));
 
-			// Calcula o MAX (e qual será a próxima jogada)
+			// Calcula o MAX (e a candidata a próxima jogada)
 			if(resultado>melhorResultado){
 				melhorResultado=resultado;
-				proximaJogada=i;
+				jogadasPossiveis[0]=i;
+				numeroJogadasPossiveis=1;
+			}
+
+			// Adiciona a lista de jogadas possiveis
+			if(resultado==melhorResultado){
+				jogadasPossiveis[numeroJogadasPossiveis]=i;
+				numeroJogadasPossiveis++;
 			}
 
 			// Restaura estado original do tabuleiro
@@ -33,6 +41,9 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 		}
 
 	}
+
+	// Escolhe qual das candidatas será a próxima jogada
+	proximaJogada=jogadasPossiveis[rand()%numeroJogadasPossiveis];
 
 	// Grava o tempo de fim do raciocínio
 	fimMinimax=clock();
@@ -47,7 +58,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	return proximaJogada;
 }
 char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFeitas,char alfaBeta){
-	char i,resultado,melhorResultado,cor,max,primeiroResultado;
+	char i=0,resultado,melhorResultado,cor,max,primeiroResultado;
 
 	// Verifica se o jogo acaba com algum resultado ou se continua
 	primeiroResultado=(char)(resultadoJogo(tabuleiro,(int)(corComputador),(int)(jogadasFeitas)));
@@ -76,7 +87,6 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 				max=NAO;
 			}
 
-			i=0;
 			while(i<61){
 
 				// Realização da poda alfa-beta
