@@ -27,15 +27,25 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 }
 char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFeitas){
 	char i,resultado,melhorResultado,cor,max,primeiroResultado;
+
+	// Verifica se o jogo acaba com algum resultado ou se continua
 	primeiroResultado=(char)(resultadoJogo(tabuleiro,(int)(corComputador),(int)(jogadasFeitas)));
+
+	// verifica se o jogo continua
 	if(primeiroResultado==CONTINUA){
+
+		// Verifica se não ultrapassou a profundidade limite
 		if(profundidade>1){
+
+			// Verifica de que cor a jogada será
 			if((jogadasFeitas%2)==0){
 				cor=BRANCO;
 			}
 			else{
 				cor=PRETO;
 			}
+
+			// Verifica se este nível fará MIN ou MAX
 			if(cor==corComputador){
 				melhorResultado=(-1);
 				max=SIM;
@@ -44,10 +54,19 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 				melhorResultado=4;
 				max=NAO;
 			}
+
 			for(i=0;i<61;i++){
+
+				// Verifica se é possível jogar em determinada posição
 				if(jogadaValida(tabuleiro,i)==SIM){
+
+					// Efetua sub-jogada
 					tabuleiro[(int)(i)]=cor;
+
+					// Aplica o minimax para esta sub-jogada
 					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1);
+
+					// Calcula o MIN ou o MAX (dependendo do nível)
 					if(max==NAO){
 						if(resultado<melhorResultado){
 							melhorResultado=resultado;
@@ -58,13 +77,23 @@ char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFei
 							melhorResultado=resultado;
 						}
 					}
+
+					// Restaura estado original do tabuleiro
 					tabuleiro[(int)(i)]=VAZIO;
+
 				}
 			}
+
+			// Retorna o MIN ou o MAX calculado acima
 			return melhorResultado;
+
 		}
+
 	}
+
+	// Retorna o resultado do tabuleiro
 	return primeiroResultado;
+
 }
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;
