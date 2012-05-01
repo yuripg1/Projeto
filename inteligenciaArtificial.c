@@ -9,12 +9,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	inicioMinimax=clock();
 	for(i=0;i<61;i++){
 		if(jogadaValida(tabuleiro,i)==SIM){
-			if((jogadasFeitas%2)==0){
-				tabuleiro[i]=BRANCO;
-			}
-			else{
-				tabuleiro[i]=PRETO;
-			}
+			tabuleiro[i]=corComputador;
 			resultado=(int)(minimax(tabuleiro,(char)(profundidadeMinimax-1),(char)(corComputador),(char)(jogadasFeitas+1)));
 			if(resultado>melhorResultado){
 				melhorResultado=resultado;
@@ -31,42 +26,45 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	return proximaJogada;
 }
 char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFeitas){
-	char i,resultado,melhorResultado,cor,max;
-	if((profundidade>2)&&(jogadasFeitas<61)){
-		if((jogadasFeitas%2)==0){
-			cor=BRANCO;
-		}
-		else{
-			cor=PRETO;
-		}
-		if(cor==corComputador){
-			melhorResultado=(-1);
-			max=SIM;
-		}
-		else{
-			melhorResultado=4;
-			max=NAO;
-		}
-		for(i=0;i<61;i++){
-			if(jogadaValida(tabuleiro,i)==SIM){
-				tabuleiro[(int)(i)]=cor;
-				resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1);
-				if(max==NAO){
-					if(resultado<melhorResultado){
-						melhorResultado=resultado;
-					}
-				}
-				else{
-					if(resultado>melhorResultado){
-						melhorResultado=resultado;
-					}
-				}
-				tabuleiro[(int)(i)]=VAZIO;
+	char i,resultado,melhorResultado,cor,max,primeiroResultado;
+	primeiroResultado=(char)(resultadoJogo(tabuleiro,(int)(corComputador),(int)(jogadasFeitas)));
+	if(primeiroResultado==CONTINUA){
+		if(profundidade>1){
+			if((jogadasFeitas%2)==0){
+				cor=BRANCO;
 			}
+			else{
+				cor=PRETO;
+			}
+			if(cor==corComputador){
+				melhorResultado=(-1);
+				max=SIM;
+			}
+			else{
+				melhorResultado=4;
+				max=NAO;
+			}
+			for(i=0;i<61;i++){
+				if(jogadaValida(tabuleiro,i)==SIM){
+					tabuleiro[(int)(i)]=cor;
+					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1);
+					if(max==NAO){
+						if(resultado<melhorResultado){
+							melhorResultado=resultado;
+						}
+					}
+					else{
+						if(resultado>melhorResultado){
+							melhorResultado=resultado;
+						}
+					}
+					tabuleiro[(int)(i)]=VAZIO;
+				}
+			}
+			return melhorResultado;
 		}
-		return melhorResultado;
 	}
-	return resultadoJogo(tabuleiro,(int)(corComputador),(int)(jogadasFeitas));
+	return primeiroResultado;
 }
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;

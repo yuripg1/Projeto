@@ -67,15 +67,15 @@ void jogo(){
 		textbackground(DARKGRAY);
 		textcolor(BLACK);
 		if(estadoJogo==EMPATE){
-			cputsxy(41,15,"O jogo acabou em empate!");
+			cputsxy(41,17,"O jogo acabou em empate!");
 		}
 		if(estadoJogo==VITORIA){
-			cputsxy(41,15,"Voce ganhou! O computador perdeu!");
+			cputsxy(41,17,"Voce ganhou! O computador perdeu!");
 		}
 		if(estadoJogo==DERROTA){
-			cputsxy(41,15,"Voce perdeu! O computador ganhou!");
+			cputsxy(41,17,"Voce perdeu! O computador ganhou!");
 		}
-		cputsxy(41,16,"Pressione ESC para sair.");
+		cputsxy(41,18,"Pressione ESC para sair.");
 		gotoxy(1,1);
 		teclaValida=NAO;
 		while(teclaValida==NAO){
@@ -173,7 +173,7 @@ int profundidadeMinimax(struct JOGO *jogo){
 	int i=0,resposta,posicaoXAnterior=40;
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
-	cputsxy(41,6,"Defina a profundidade do minimax: (3-62)");
+	cputsxy(41,6,"Defina a profundidade do minimax: (2-62)");
 	gotoxy(41,7);
 	while(i<3){
 		profundidadeMinimax[i]=getch();
@@ -194,7 +194,7 @@ int profundidadeMinimax(struct JOGO *jogo){
 		if(profundidadeMinimax[i]==ENTER){
 			profundidadeMinimax[i]='\0';
 			resposta=atoi(profundidadeMinimax);
-			if((resposta>2)&&(resposta<63)){
+			if((resposta>1)&&(resposta<63)){
 				cputsxy(41,8,"                                ");
 				gotoxy(1,1);
 				return resposta;
