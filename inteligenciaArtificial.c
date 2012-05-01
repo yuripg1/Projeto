@@ -6,23 +6,44 @@
 int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,int jogadasFeitas){
 	int proximaJogada=(-1),resultado,melhorResultado=(-1),i;
 	clock_t inicioMinimax,fimMinimax;
+
+	// Grava o tempo de início do raciocínio
 	inicioMinimax=clock();
+
 	for(i=0;i<61;i++){
+
+		// Verifica se é possível jogar em determinada posição
 		if(jogadaValida(tabuleiro,i)==SIM){
+
+			// Efetua sub-jogada
 			tabuleiro[i]=corComputador;
+
+			// Aplica o minimax para esta sub-jogada
 			resultado=(int)(minimax(tabuleiro,(char)(profundidadeMinimax-1),(char)(corComputador),(char)(jogadasFeitas+1),(char)(melhorResultado)));
+
+			// Calcula o MAX (e qual será a próxima jogada)
 			if(resultado>melhorResultado){
 				melhorResultado=resultado;
 				proximaJogada=i;
 			}
+
+			// Restaura estado original do tabuleiro
 			tabuleiro[i]=VAZIO;
+
 		}
+
 	}
+
+	// Grava o tempo de fim do raciocínio
 	fimMinimax=clock();
+
+	// Imprime o tempo decorrido no raciocínio
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
 	gotoxy(41,15);
 	printf("Tempo de raciocinio: %1.3f",((float)(fimMinimax-inicioMinimax))/((float)CLOCKS_PER_SEC));
+
+	// Retorna qual deverá ser a próxima jogada
 	return proximaJogada;
 }
 char minimax(int *tabuleiro,char profundidade,char corComputador,char jogadasFeitas,char alfaBeta){
