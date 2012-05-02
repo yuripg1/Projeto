@@ -175,7 +175,7 @@ int profundidadeMinimax(struct JOGO *jogo){
 	int i=0,resposta,posicaoXAnterior=40;
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
-	cputsxy(41,6,"Defina a profundidade do minimax: (2-62)");
+	cputsxy(41,6,"Defina a profundidade do minimax: (1-61)");
 	gotoxy(41,7);
 	while(i<3){
 		profundidadeMinimax[i]=getch();
@@ -196,7 +196,7 @@ int profundidadeMinimax(struct JOGO *jogo){
 		if(profundidadeMinimax[i]==ENTER){
 			profundidadeMinimax[i]='\0';
 			resposta=atoi(profundidadeMinimax);
-			if((resposta>1)&&(resposta<63)){
+			if((resposta>0)&&(resposta<62)){
 				cputsxy(41,8,"                                ");
 				gotoxy(1,1);
 				return resposta;

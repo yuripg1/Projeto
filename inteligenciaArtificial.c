@@ -67,7 +67,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 	if(primeiroResultado==CONTINUA){
 
 		// Verifica se não ultrapassou a profundidade limite
-		if(profundidade>1){
+		if(profundidade!=0){
 
 			// Verifica de que cor a jogada será
 			if((jogadasFeitas%2)==0){
