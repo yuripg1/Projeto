@@ -52,7 +52,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
 	gotoxy(41,15);
-	printf("Tempo de raciocinio: %1.3f",((float)(fimMinimax-inicioMinimax))/((float)CLOCKS_PER_SEC));
+	printf("Tempo de raciocinio: %1.3f segundos",((float)(fimMinimax-inicioMinimax))/((float)CLOCKS_PER_SEC));
 
 	// Retorna qual deverá ser a próxima jogada
 	return proximaJogada;
@@ -89,16 +89,8 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 
 			while(i<61){
 
-				// Realização da poda alfa-beta
-				if((max==NAO)&&(melhorResultado<alfaBeta)){
-					i=61;
-				}
-				if((max==SIM)&&(melhorResultado>alfaBeta)){
-					i=61;
-				}
-
 				// Verifica se é possível jogar em determinada posição
-				if(jogadaValida(tabuleiro,i)==SIM){
+				if(jogadaValida(tabuleiro,i)!=NAO){
 
 					// Efetua sub-jogada
 					tabuleiro[i]=cor;
@@ -106,20 +98,32 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 					// Aplica o minimax para esta sub-jogada
 					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
 
+					// Restaura estado original do tabuleiro
+					tabuleiro[i]=VAZIO;
+
 					// Calcula o MIN ou o MAX (dependendo do nível)
 					if(max==NAO){
 						if(resultado<melhorResultado){
+
+							// Realização da poda alfa-beta
+							if(resultado<alfaBeta){
+								return resultado;
+							}
+
 							melhorResultado=resultado;
 						}
 					}
 					else{
 						if(resultado>melhorResultado){
+
+							// Realização da poda alfa-beta
+							if(resultado>alfaBeta){
+								return resultado;
+							}
+
 							melhorResultado=resultado;
 						}
 					}
-
-					// Restaura estado original do tabuleiro
-					tabuleiro[i]=VAZIO;
 
 				}
 
