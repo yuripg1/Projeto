@@ -58,7 +58,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	return proximaJogada;
 }
 int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfaBeta){
-	int i=0,resultado,melhorResultado,cor,max,primeiroResultado;
+	int i=0,resultado,melhorResultado,cor,primeiroResultado;
 
 	// Calcula o resultado do estado atual do tabuleiro
 	primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas);
@@ -77,43 +77,24 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 				cor=PRETO;
 			}
 
-			// Verifica se este nível fará MIN ou MAX
+			// Bloco onde é calculado o MAX
 			if(cor==corComputador){
 				melhorResultado=ALFA;
-				max=SIM;
-			}
-			else{
-				melhorResultado=BETA;
-				max=NAO;
-			}
+				while(i<61){
 
-			while(i<61){
+					// Verifica se é possível jogar em determinada posição
+					if(jogadaValida(tabuleiro,i)!=NAO){
 
-				// Verifica se é possível jogar em determinada posição
-				if(jogadaValida(tabuleiro,i)!=NAO){
+						// Efetua sub-jogada
+						tabuleiro[i]=cor;
 
-					// Efetua sub-jogada
-					tabuleiro[i]=cor;
+						// Aplica o minimax para esta sub-jogada
+						resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
 
-					// Aplica o minimax para esta sub-jogada
-					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
+						// Restaura estado original do tabuleiro
+						tabuleiro[i]=VAZIO;
 
-					// Restaura estado original do tabuleiro
-					tabuleiro[i]=VAZIO;
-
-					// Calcula o MIN ou o MAX (dependendo do nível)
-					if(max==NAO){
-						if(resultado<melhorResultado){
-
-							// Realização da poda alfa-beta
-							if(resultado<alfaBeta){
-								return resultado;
-							}
-
-							melhorResultado=resultado;
-						}
-					}
-					else{
+						// Calcula o MAX
 						if(resultado>melhorResultado){
 
 							// Realização da poda alfa-beta
@@ -123,11 +104,43 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 
 							melhorResultado=resultado;
 						}
+
 					}
-
+					i++;
 				}
+			}
 
-				i++;
+			// Bloco onde é calculado o MIN
+			else{
+				melhorResultado=BETA;
+				while(i<61){
+
+					// Verifica se é possível jogar em determinada posição
+					if(jogadaValida(tabuleiro,i)!=NAO){
+
+						// Efetua sub-jogada
+						tabuleiro[i]=cor;
+
+						// Aplica o minimax para esta sub-jogada
+						resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
+
+						// Restaura estado original do tabuleiro
+						tabuleiro[i]=VAZIO;
+
+						// Calcula o MIN
+						if(resultado<melhorResultado){
+
+							// Realização da poda alfa-beta
+							if(resultado<alfaBeta){
+								return resultado;
+							}
+
+							melhorResultado=resultado;
+						}
+
+					}
+					i++;
+				}
 			}
 
 			// Retorna o MIN ou o MAX calculado acima
@@ -135,14 +148,16 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 
 		}
 
+		return CONTINUA;
+
 	}
 
 	// Dá mais peso para vitórias e derrotas mais próximas (com menos jogadas)
-	if(resultadoBom(primeiroResultado)==SIM){
-		primeiroResultado+=profundidade;
+	if(resultadoBom(primeiroResultado)!=NAO){
+		primeiroResultado-=jogadasFeitas;
 	}
 	else{
-		primeiroResultado-=profundidade;
+		primeiroResultado+=jogadasFeitas;
 	}
 
 	// Retorna o resultado do estado atual do tabuleiro
