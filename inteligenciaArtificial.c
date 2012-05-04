@@ -145,7 +145,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 				i++;
 			}
 
-			// Retorna o MAX calculado acima
+			// Retorna o MIN calculado acima
 			return melhorResultado;
 
 		}
@@ -307,23 +307,7 @@ int formaSequencia3(int *tabuleiro,int posicao,int corJogador){
 }
 int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 	int i,sequencia;
-	for(i=0;i<3;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i,corJogador);
-			if(sequencia!=CONTINUA){
-				return sequencia;
-			}
-		}
-	}
-	for(i=5;i<9;i++){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i,corJogador);
-			if(sequencia!=CONTINUA){
-				return sequencia;
-			}
-		}
-	}
-	for(i=11;i<16;i++){
+	for(i=26;i<33;i++){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia1(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
@@ -339,7 +323,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 			}
 		}
 	}
-	for(i=26;i<33;i++){
+	for(i=35;i<41;i++){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia1(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
@@ -347,7 +331,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 			}
 		}
 	}
-	for(i=35;i<41;i++){
+	for(i=11;i<16;i++){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia1(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
@@ -363,7 +347,23 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 			}
 		}
 	}
+	for(i=5;i<9;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				return sequencia;
+			}
+		}
+	}
 	for(i=50;i<54;i++){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				return sequencia;
+			}
+		}
+	}
+	for(i=0;i<3;i++){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia1(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
