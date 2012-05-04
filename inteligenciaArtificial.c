@@ -98,7 +98,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 						if(resultado>melhorResultado){
 
 							// Realização da poda alfa-beta
-							if(resultado>=alfaBeta){
+							if(resultado>alfaBeta){
 								return resultado;
 							}
 
@@ -134,7 +134,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 					if(resultado<melhorResultado){
 
 						// Realização da poda alfa-beta
-						if(resultado<=alfaBeta){
+						if(resultado<alfaBeta){
 							return resultado;
 						}
 
