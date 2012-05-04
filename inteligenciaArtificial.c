@@ -98,7 +98,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 						if(resultado>melhorResultado){
 
 							// Realização da poda alfa-beta
-							if(resultado>alfaBeta){
+							if(resultado>=alfaBeta){
 								return resultado;
 							}
 
@@ -108,42 +108,44 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 					}
 					i++;
 				}
+
+				// Retorna o MAX calculado acima
+				return melhorResultado;
+
 			}
 
 			// Bloco onde é calculado o MIN
-			else{
-				melhorResultado=BETA;
-				while(i<61){
+			melhorResultado=BETA;
+			while(i<61){
 
-					// Verifica se é possível jogar em determinada posição
-					if(jogadaValida(tabuleiro,i)!=NAO){
+				// Verifica se é possível jogar em determinada posição
+				if(jogadaValida(tabuleiro,i)!=NAO){
 
-						// Efetua sub-jogada
-						tabuleiro[i]=cor;
+					// Efetua sub-jogada
+					tabuleiro[i]=cor;
 
-						// Aplica o minimax para esta sub-jogada
-						resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
+					// Aplica o minimax para esta sub-jogada
+					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
 
-						// Restaura estado original do tabuleiro
-						tabuleiro[i]=VAZIO;
+					// Restaura estado original do tabuleiro
+					tabuleiro[i]=VAZIO;
 
-						// Calcula o MIN
-						if(resultado<melhorResultado){
+					// Calcula o MIN
+					if(resultado<melhorResultado){
 
-							// Realização da poda alfa-beta
-							if(resultado<alfaBeta){
-								return resultado;
-							}
-
-							melhorResultado=resultado;
+						// Realização da poda alfa-beta
+						if(resultado<=alfaBeta){
+							return resultado;
 						}
 
+						melhorResultado=resultado;
 					}
-					i++;
+
 				}
+				i++;
 			}
 
-			// Retorna o MIN ou o MAX calculado acima
+			// Retorna o MAX calculado acima
 			return melhorResultado;
 
 		}
