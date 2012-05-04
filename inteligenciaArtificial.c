@@ -58,7 +58,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	return proximaJogada;
 }
 int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfaBeta){
-	int i=0,resultado,melhorResultado,cor,primeiroResultado;
+	int primeiroResultado;
 
 	// Calcula o resultado do estado atual do tabuleiro
 	primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas);
@@ -68,6 +68,8 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 
 		// Verifica se não ultrapassou a profundidade limite
 		if(profundidade!=0){
+
+			int i=0,resultado,melhorResultado,cor;
 
 			// Verifica de que cor a jogada será
 			if((jogadasFeitas%2)==0){
@@ -96,12 +98,6 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 
 						// Calcula o MAX
 						if(resultado>melhorResultado){
-
-							// Realização da poda alfa-beta
-							if(resultado>alfaBeta){
-								return resultado;
-							}
-
 							melhorResultado=resultado;
 						}
 
@@ -132,12 +128,6 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 
 					// Calcula o MIN
 					if(resultado<melhorResultado){
-
-						// Realização da poda alfa-beta
-						if(resultado<alfaBeta){
-							return resultado;
-						}
-
 						melhorResultado=resultado;
 					}
 
