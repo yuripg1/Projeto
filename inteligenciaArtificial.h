@@ -12,7 +12,6 @@
 #define BETA 200
 int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,int jogadasFeitas);
 int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfa,int beta);
-int resultadoBom(int resultado);
 int primeiroVazio(int *tabuleiro);
 int temVizinho1(int *tabuleiro,int posicao);
 int temVizinho2(int *tabuleiro,int posicao);

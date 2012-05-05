@@ -16,7 +16,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	for(i=0;i<61;i++){
 
 		// Verifica se é possível jogar em determinada posição
-		if(jogadaValida(tabuleiro,i)==SIM){
+		if(tabuleiro[i]==VAZIO){
 
 			// Efetua sub-jogada
 			tabuleiro[i]=corComputador;
@@ -89,7 +89,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 				while(i>(-1)){
 
 					// Verifica se é possível jogar em determinada posição
-					if(jogadaValida(tabuleiro,i)!=NAO){
+					if(tabuleiro[i]==VAZIO){
 
 						// Efetua sub-jogada
 						tabuleiro[i]=cor;
@@ -131,7 +131,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 			while(i>(-1)){
 
 				// Verifica se é possível jogar em determinada posição
-				if(jogadaValida(tabuleiro,i)!=NAO){
+				if(tabuleiro[i]==VAZIO){
 
 					// Efetua sub-jogada
 					tabuleiro[i]=cor;
@@ -174,7 +174,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 	}
 
 	// Dá mais peso para vitórias e derrotas mais próximas (com menos jogadas)
-	if(resultadoBom(primeiroResultado)!=NAO){
+	if(primeiroResultado>CONTINUA){
 		primeiroResultado-=jogadasFeitas;
 	}
 	else{
@@ -184,12 +184,6 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 	// Retorna o resultado do estado atual do tabuleiro
 	return primeiroResultado;
 
-}
-int resultadoBom(int resultado){
-	if(resultado>CONTINUA){
-		return SIM;
-	}
-	return NAO;
 }
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;
