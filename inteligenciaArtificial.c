@@ -71,7 +71,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 		// Verifica se não ultrapassou a profundidade limite
 		if(profundidade!=0){
 
-			int i=0,resultado,cor;
+			int i=30,proximo=0,resultado,cor;
 			profundidade--;
 
 			// Verifica de que cor a jogada será
@@ -86,7 +86,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 
 			// Bloco onde é calculado o MAX
 			if(cor==corComputador){
-				while(i<61){
+				while(i>(-1)){
 
 					// Verifica se é possível jogar em determinada posição
 					if(jogadaValida(tabuleiro,i)!=NAO){
@@ -112,7 +112,14 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 						}
 
 					}
-					i++;
+					if(proximo<0){
+						proximo--;
+					}
+					else{
+						proximo++;
+					}
+					proximo*=(-1);
+					i+=proximo;
 				}
 
 				// Retorna o MAX calculado acima
@@ -121,7 +128,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 			}
 
 			// Bloco onde é calculado o MIN
-			while(i<61){
+			while(i>(-1)){
 
 				// Verifica se é possível jogar em determinada posição
 				if(jogadaValida(tabuleiro,i)!=NAO){
@@ -147,7 +154,14 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 					}
 
 				}
-				i++;
+				if(proximo<0){
+					proximo--;
+				}
+				else{
+					proximo++;
+				}
+				proximo*=(-1);
+				i+=proximo;
 			}
 
 			// Retorna o MIN calculado acima
