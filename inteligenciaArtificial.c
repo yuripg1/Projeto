@@ -4,63 +4,89 @@
 #include <time.h>
 #include "desenhoTabuleiro.h"
 #include "inteligenciaArtificial.h"
-int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,int jogadasFeitas){
-	int proximaJogada=(-1),resultado,melhorResultado=ALFA,i,jogadasPossiveis[61],numeroJogadasPossiveis=1;
-	clock_t inicioMinimax,fimMinimax;
-	profundidadeMinimax--;
-	jogadasFeitas++;
+int jogadaComputador(int *tabuleiro,int corComputador,int jogadasFeitas){
+	int proximaJogada=(-1),resultado,melhorResultado,i,jogadasPossiveis[61],numeroJogadasPossiveis,profundidade=1;
+	clock_t tempoInicio,tempoLimite,tempoAtual;
 
 	// Grava o tempo de início do raciocínio
-	inicioMinimax=clock();
+	tempoInicio=clock();
+	// Determina o tempo limite para o raciocícnio
+	tempoLimite=tempoInicio+((clock_t)(((float)(5*CLOCKS_PER_SEC))*0.99f));
+	jogadasFeitas++;
+	do{
+		numeroJogadasPossiveis=1;
+		melhorResultado=ALFA;
+		for(i=0;i<61;i++){
 
-	for(i=0;i<61;i++){
+			// Verifica se é possível jogar em determinada posição
+			if(tabuleiro[i]==VAZIO){
 
-		// Verifica se é possível jogar em determinada posição
-		if(tabuleiro[i]==VAZIO){
+				// Efetua sub-jogada
+				tabuleiro[i]=corComputador;
 
-			// Efetua sub-jogada
-			tabuleiro[i]=corComputador;
+				// Aplica o minimax para esta sub-jogada
+				resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,ALFA,BETA,tempoLimite);
 
-			// Aplica o minimax para esta sub-jogada
-			resultado=minimax(tabuleiro,profundidadeMinimax,corComputador,jogadasFeitas,ALFA,BETA);
+				// Restaura estado original do tabuleiro
+				tabuleiro[i]=VAZIO;
 
-			// Restaura estado original do tabuleiro
-			tabuleiro[i]=VAZIO;
+				// Calcula o MAX (e a candidata a próxima jogada)
+				if(resultado>melhorResultado){
+					melhorResultado=resultado;
+					jogadasPossiveis[0]=i;
+					numeroJogadasPossiveis=1;
+				}
 
-			// Calcula o MAX (e a candidata a próxima jogada)
-			if(resultado>melhorResultado){
-				melhorResultado=resultado;
-				jogadasPossiveis[0]=i;
-				numeroJogadasPossiveis=1;
+				// Adiciona a lista de jogadas possiveis
+				if(resultado==melhorResultado){
+					jogadasPossiveis[numeroJogadasPossiveis]=i;
+					numeroJogadasPossiveis++;
+				}
+
 			}
 
-			// Adiciona a lista de jogadas possiveis
-			if(resultado==melhorResultado){
-				jogadasPossiveis[numeroJogadasPossiveis]=i;
-				numeroJogadasPossiveis++;
+		}
+		tempoAtual=clock();
+
+		// Aceita só os processamentos concluídos antes do tempo estourar
+		if(tempoAtual<tempoLimite){
+
+			// A próxima jogada será uma das opções ótimas
+			proximaJogada=jogadasPossiveis[rand()%numeroJogadasPossiveis];
+
+			// Aumenta a profundidade para a próxima tentativa
+			if(profundidade<60){
+				profundidade++;
 			}
 
 		}
 
 	}
+	while(tempoAtual<tempoLimite);
 
-	// Escolhe qual das candidatas será a próxima jogada
-	proximaJogada=jogadasPossiveis[rand()%numeroJogadasPossiveis];
-
-	// Grava o tempo de fim do raciocínio
-	fimMinimax=clock();
-
-	// Imprime o tempo decorrido no raciocínio
+	// Cores para as impressões na tela
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
+
+	// Imprime a profundidade alcançada no processamento
+	cputsxy(41,7,"  ");
+	gotoxy(41,7);
+	printf("%d",profundidade);
+
+	// Imprime o tempo decorrido no raciocínio
 	gotoxy(41,15);
-	printf("Tempo de raciocinio: %1.3f segundos",((float)(fimMinimax-inicioMinimax))/((float)CLOCKS_PER_SEC));
+	printf("Tempo de raciocinio: %1.3f segundos",((float)(clock()-tempoInicio))/((float)CLOCKS_PER_SEC));
 
 	// Retorna qual deverá ser a próxima jogada
 	return proximaJogada;
 }
-int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfa,int beta){
+int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfa,int beta,clock_t tempoLimite){
 	int primeiroResultado;
+
+	// Interrompe o processamento caso tenha estourado o tempo
+	if(clock()>tempoLimite){
+		return CONTINUA;
+	}
 
 	// Calcula o resultado do estado atual do tabuleiro
 	primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas);
@@ -95,7 +121,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 						tabuleiro[i]=cor;
 
 						// Aplica o minimax para esta sub-jogada
-						resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,alfa,beta);
+						resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,alfa,beta,tempoLimite);
 
 						// Restaura estado original do tabuleiro
 						tabuleiro[i]=VAZIO;
@@ -137,7 +163,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 					tabuleiro[i]=cor;
 
 					// Aplica o minimax para esta sub-jogada
-					resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,alfa,beta);
+					resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,alfa,beta,tempoLimite);
 
 					// Restaura estado original do tabuleiro
 					tabuleiro[i]=VAZIO;
