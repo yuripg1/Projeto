@@ -7,6 +7,8 @@
 int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,int jogadasFeitas){
 	int proximaJogada=(-1),resultado,melhorResultado=ALFA,i,jogadasPossiveis[61],numeroJogadasPossiveis=1;
 	clock_t inicioMinimax,fimMinimax;
+	profundidadeMinimax--;
+	jogadasFeitas++;
 
 	// Grava o tempo de início do raciocínio
 	inicioMinimax=clock();
@@ -20,7 +22,10 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 			tabuleiro[i]=corComputador;
 
 			// Aplica o minimax para esta sub-jogada
-			resultado=minimax(tabuleiro,profundidadeMinimax-1,corComputador,jogadasFeitas+1);
+			resultado=minimax(tabuleiro,profundidadeMinimax,corComputador,jogadasFeitas,ALFA,BETA);
+
+			// Restaura estado original do tabuleiro
+			tabuleiro[i]=VAZIO;
 
 			// Calcula o MAX (e a candidata a próxima jogada)
 			if(resultado>melhorResultado){
@@ -34,9 +39,6 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 				jogadasPossiveis[numeroJogadasPossiveis]=i;
 				numeroJogadasPossiveis++;
 			}
-
-			// Restaura estado original do tabuleiro
-			tabuleiro[i]=VAZIO;
 
 		}
 
@@ -57,7 +59,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	// Retorna qual deverá ser a próxima jogada
 	return proximaJogada;
 }
-int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas){
+int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfa,int beta){
 	int primeiroResultado;
 
 	// Calcula o resultado do estado atual do tabuleiro
@@ -69,7 +71,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas)
 		// Verifica se não ultrapassou a profundidade limite
 		if(profundidade!=0){
 
-			int i=0,resultado,melhorResultado,cor;
+			int i=0,resultado,cor;
 			profundidade--;
 
 			// Verifica de que cor a jogada será
@@ -84,7 +86,6 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas)
 
 			// Bloco onde é calculado o MAX
 			if(cor==corComputador){
-				melhorResultado=ALFA;
 				while(i<61){
 
 					// Verifica se é possível jogar em determinada posição
@@ -94,14 +95,20 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas)
 						tabuleiro[i]=cor;
 
 						// Aplica o minimax para esta sub-jogada
-						resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas);
+						resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,alfa,beta);
 
 						// Restaura estado original do tabuleiro
 						tabuleiro[i]=VAZIO;
 
 						// Calcula o MAX
-						if(resultado>melhorResultado){
-							melhorResultado=resultado;
+						if(resultado>alfa){
+
+							// Realização da poda alfa-beta
+							if(beta<=resultado){
+								return resultado;
+							}
+
+							alfa=resultado;
 						}
 
 					}
@@ -109,12 +116,11 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas)
 				}
 
 				// Retorna o MAX calculado acima
-				return melhorResultado;
+				return alfa;
 
 			}
 
 			// Bloco onde é calculado o MIN
-			melhorResultado=BETA;
 			while(i<61){
 
 				// Verifica se é possível jogar em determinada posição
@@ -124,14 +130,20 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas)
 					tabuleiro[i]=cor;
 
 					// Aplica o minimax para esta sub-jogada
-					resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas);
+					resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,alfa,beta);
 
 					// Restaura estado original do tabuleiro
 					tabuleiro[i]=VAZIO;
 
 					// Calcula o MIN
-					if(resultado<melhorResultado){
-						melhorResultado=resultado;
+					if(resultado<beta){
+
+						// Realização da poda alfa-beta
+						if(resultado<=alfa){
+							return resultado;
+						}
+
+						beta=resultado;
 					}
 
 				}
@@ -139,7 +151,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas)
 			}
 
 			// Retorna o MIN calculado acima
-			return melhorResultado;
+			return beta;
 
 		}
 
