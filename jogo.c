@@ -61,7 +61,7 @@ void jogo(){
 				}
 			}
 			else{
-				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->corAtual,jogo->jogadasFeitas));
+				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->corAtual,jogo->jogadasFeitas,jogo->profundidadeMinimax));
 			}
 			estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador,jogo->jogadasFeitas);
 		}
