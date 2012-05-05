@@ -20,7 +20,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 			tabuleiro[i]=corComputador;
 
 			// Aplica o minimax para esta sub-jogada
-			resultado=minimax(tabuleiro,profundidadeMinimax-1,corComputador,jogadasFeitas+1,melhorResultado);
+			resultado=minimax(tabuleiro,profundidadeMinimax-1,corComputador,jogadasFeitas+1);
 
 			// Calcula o MAX (e a candidata a próxima jogada)
 			if(resultado>melhorResultado){
@@ -57,7 +57,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int profundidadeMinimax,in
 	// Retorna qual deverá ser a próxima jogada
 	return proximaJogada;
 }
-int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfaBeta){
+int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas){
 	int primeiroResultado;
 
 	// Calcula o resultado do estado atual do tabuleiro
@@ -70,6 +70,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 		if(profundidade!=0){
 
 			int i=0,resultado,melhorResultado,cor;
+			profundidade--;
 
 			// Verifica de que cor a jogada será
 			if((jogadasFeitas%2)==0){
@@ -78,6 +79,8 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 			else{
 				cor=PRETO;
 			}
+
+			jogadasFeitas++;
 
 			// Bloco onde é calculado o MAX
 			if(cor==corComputador){
@@ -91,7 +94,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 						tabuleiro[i]=cor;
 
 						// Aplica o minimax para esta sub-jogada
-						resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
+						resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas);
 
 						// Restaura estado original do tabuleiro
 						tabuleiro[i]=VAZIO;
@@ -121,7 +124,7 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 					tabuleiro[i]=cor;
 
 					// Aplica o minimax para esta sub-jogada
-					resultado=minimax(tabuleiro,profundidade-1,corComputador,jogadasFeitas+1,melhorResultado);
+					resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas);
 
 					// Restaura estado original do tabuleiro
 					tabuleiro[i]=VAZIO;
@@ -233,8 +236,7 @@ int temVizinho3(int *tabuleiro,int posicao){
 	return SEM_VIZINHO;
 }
 int formaSequencia1(int *tabuleiro,int posicao,int corJogador){
-	int numeroVizinhos=1,vizinho;
-	vizinho=temVizinho1(tabuleiro,posicao);
+	int numeroVizinhos=1,vizinho=temVizinho1(tabuleiro,posicao);
 	while(vizinho!=SEM_VIZINHO){
 		numeroVizinhos++;
 		vizinho=temVizinho1(tabuleiro,vizinho);
@@ -254,8 +256,7 @@ int formaSequencia1(int *tabuleiro,int posicao,int corJogador){
 	return CONTINUA;
 }
 int formaSequencia2(int *tabuleiro,int posicao,int corJogador){
-	int numeroVizinhos=1,vizinho;
-	vizinho=temVizinho2(tabuleiro,posicao);
+	int numeroVizinhos=1,vizinho=temVizinho2(tabuleiro,posicao);
 	while(vizinho!=SEM_VIZINHO){
 		numeroVizinhos++;
 		vizinho=temVizinho2(tabuleiro,vizinho);
@@ -275,8 +276,7 @@ int formaSequencia2(int *tabuleiro,int posicao,int corJogador){
 	return CONTINUA;
 }
 int formaSequencia3(int *tabuleiro,int posicao,int corJogador){
-	int numeroVizinhos=1,vizinho;
-	vizinho=temVizinho3(tabuleiro,posicao);
+	int numeroVizinhos=1,vizinho=temVizinho3(tabuleiro,posicao);
 	while(vizinho!=SEM_VIZINHO){
 		numeroVizinhos++;
 		vizinho=temVizinho3(tabuleiro,vizinho);
