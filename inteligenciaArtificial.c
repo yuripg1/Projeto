@@ -61,7 +61,7 @@ int jogadaComputador(int *tabuleiro,int corComputador,int jogadasFeitas,int prof
 			proximaJogada=jogadasPossiveis[rand()%numeroJogadasPossiveis];
 
 			// Aumenta a profundidade para a próxima tentativa (se der para aumentar)
-			if(profundidadeMinimax<60){
+			if(profundidadeMinimax<61){
 				profundidadeMinimax++;
 			}
 
