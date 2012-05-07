@@ -4,145 +4,102 @@
 #include <time.h>
 #include "desenhoTabuleiro.h"
 #include "inteligenciaArtificial.h"
-int jogadaComputador(int *tabuleiro,int corComputador,int jogadasFeitas,int profundidadeMinimax){
-	int proximaJogada=(-1),resultado,melhorResultado,i,jogadasPossiveis[61],numeroJogadasPossiveis;
-	clock_t tempoInicio,tempoLimite,tempoAtual;
-
-	// Grava o tempo de início do raciocínio
+int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador){
+	clock_t tempoInicio,tempoLimite;
+	int melhorJogada,proximaJogada,analiseCompleta;
 	tempoInicio=clock();
-
-	// Determina o tempo limite para o raciocícnio
-	tempoLimite=tempoInicio+((clock_t)(((float)(5*CLOCKS_PER_SEC))*0.99f));
-
-	// Joga na primeira posição vazia caso não consiga processar em tempo
-	proximaJogada=primeiroVazio(tabuleiro);
-
-	jogadasFeitas++;
-	profundidadeMinimax--;
-	do{
-		numeroJogadasPossiveis=1;
-		melhorResultado=ALFA;
-		for(i=0;i<61;i++){
-
-			// Verifica se é possível jogar em determinada posição
-			if(tabuleiro[i]==VAZIO){
-
-				// Efetua sub-jogada
-				tabuleiro[i]=corComputador;
-
-				// Aplica o minimax para esta sub-jogada
-				resultado=minimax(tabuleiro,profundidadeMinimax,corComputador,jogadasFeitas,ALFA,BETA,tempoLimite);
-
-				// Restaura estado original do tabuleiro
-				tabuleiro[i]=VAZIO;
-
-				// Calcula o MAX (e a candidata a próxima jogada)
-				if(resultado>melhorResultado){
-					melhorResultado=resultado;
-					jogadasPossiveis[0]=i;
-					numeroJogadasPossiveis=1;
-				}
-
-				// Adiciona a lista de jogadas possiveis
-				if(resultado==melhorResultado){
-					jogadasPossiveis[numeroJogadasPossiveis]=i;
-					numeroJogadasPossiveis++;
-				}
-
-			}
-
+	tempoLimite=tempoInicio+((clock_t)(((float)(5*CLOCKS_PER_SEC))*0.995f));
+	analiseCompleta=NAO;
+	profundidade--;
+	melhorJogada=qualquerVazio(tabuleiro);
+	proximaJogada=melhorJogada;
+	while((clock()<tempoLimite)&&(analiseCompleta==NAO)){
+		proximaJogada=melhorJogada;
+		if(profundidade<61){
+			profundidade++;
+			melhorJogada=primeiroMax(tempoLimite,profundidade,jogadasFeitas,tabuleiro,corComputador);
 		}
-		tempoAtual=clock();
-
-		// Aceita só os processamentos concluídos antes do tempo estourar
-		if(tempoAtual<tempoLimite){
-
-			// A próxima jogada será uma das opções ótimas
-			proximaJogada=jogadasPossiveis[rand()%numeroJogadasPossiveis];
-
-			// Aumenta a profundidade para a próxima tentativa (se der para aumentar)
-			if(profundidadeMinimax<61){
-				profundidadeMinimax++;
-			}
-
+		else{
+			analiseCompleta=SIM;
 		}
-
 	}
-	while(tempoAtual<tempoLimite);
-
-	// Cores para as impressões na tela
+	if(analiseCompleta==NAO){
+		profundidade--;
+	}
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
-
-	// Imprime a profundidade alcançada no processamento
 	cputsxy(41,7,"  ");
 	gotoxy(41,7);
-	printf("%d",profundidadeMinimax);
-
-	// Imprime o tempo decorrido no raciocínio
+	printf("%d",profundidade);
 	gotoxy(41,15);
 	printf("Tempo de raciocinio: %1.3f segundos",((float)(clock()-tempoInicio))/((float)CLOCKS_PER_SEC));
-
-	// Retorna qual deverá ser a próxima jogada
 	return proximaJogada;
 }
-int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfa,int beta,clock_t tempoLimite){
+int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
+	int i=30,resultado,jogadasOtimas[61],numeroJogadasOtimas=1,melhorResultado,proximo=0;
+	if(clock()>tempoLimite){
+		return 0;
+	}
+	profundidade--;
+	jogadasFeitas++;
+	melhorResultado=ALFA;
+	while(i>(-1)){
+		if(tabuleiro[i]==VAZIO){
+			tabuleiro[i]=corComputador;
+			resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas,profundidade,ALFA,BETA);
+			tabuleiro[i]=VAZIO;
+			if(resultado==melhorResultado){
+				jogadasOtimas[numeroJogadasOtimas]=i;
+				numeroJogadasOtimas++;
+			}
+			else{
+				if(resultado>melhorResultado){
+					melhorResultado=resultado;
+					jogadasOtimas[0]=i;
+					numeroJogadasOtimas=1;
+				}
+			}
+		}
+		if(proximo<0){
+			proximo--;
+		}
+		else{
+			proximo++;
+		}
+		proximo*=(-1);
+		i+=proximo;
+	}
+	return jogadasOtimas[rand()%numeroJogadasOtimas];
+}
+int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta){
 	int primeiroResultado;
-
-	// Interrompe o processamento caso tenha estourado o tempo
 	if(clock()>tempoLimite){
 		return CONTINUA;
 	}
-
-	// Calcula o resultado do estado atual do tabuleiro
 	primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas);
-
-	// verifica se o jogo continua
 	if(primeiroResultado==CONTINUA){
-
-		// Verifica se não ultrapassou a profundidade limite
 		if(profundidade!=0){
-
-			int i=30,proximo=0,resultado,cor;
-			profundidade--;
-
-			// Verifica de que cor a jogada será
+			int cor,i=30,resultado,proximo=0;
 			if((jogadasFeitas%2)==0){
 				cor=BRANCO;
 			}
 			else{
 				cor=PRETO;
 			}
-
+			profundidade--;
 			jogadasFeitas++;
-
-			// Bloco onde é calculado o MAX
 			if(cor==corComputador){
 				while(i>(-1)){
-
-					// Verifica se é possível jogar em determinada posição
 					if(tabuleiro[i]==VAZIO){
-
-						// Efetua sub-jogada
 						tabuleiro[i]=cor;
-
-						// Aplica o minimax para esta sub-jogada
-						resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,alfa,beta,tempoLimite);
-
-						// Restaura estado original do tabuleiro
+						resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas,profundidade,alfa,beta);
 						tabuleiro[i]=VAZIO;
-
-						// Calcula o MAX
 						if(resultado>alfa){
-
-							// Realização da poda beta
 							if(beta<=resultado){
 								return resultado;
 							}
-
 							alfa=resultado;
 						}
-
 					}
 					if(proximo<0){
 						proximo--;
@@ -153,38 +110,19 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 					proximo*=(-1);
 					i+=proximo;
 				}
-
-				// Retorna o MAX calculado acima
 				return alfa;
-
 			}
-
-			// Bloco onde é calculado o MIN
 			while(i>(-1)){
-
-				// Verifica se é possível jogar em determinada posição
-				if(tabuleiro[i]==VAZIO){
-
-					// Efetua sub-jogada
+			if(tabuleiro[i]==VAZIO){
 					tabuleiro[i]=cor;
-
-					// Aplica o minimax para esta sub-jogada
-					resultado=minimax(tabuleiro,profundidade,corComputador,jogadasFeitas,alfa,beta,tempoLimite);
-
-					// Restaura estado original do tabuleiro
+					resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas,profundidade,alfa,beta);
 					tabuleiro[i]=VAZIO;
-
-					// Calcula o MIN
 					if(resultado<beta){
-
-						// Realização da poda alfa
 						if(resultado<=alfa){
 							return resultado;
 						}
-
 						beta=resultado;
 					}
-
 				}
 				if(proximo<0){
 					proximo--;
@@ -195,27 +133,25 @@ int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,
 				proximo*=(-1);
 				i+=proximo;
 			}
-
-			// Retorna o MIN calculado acima
 			return beta;
-
 		}
-
 		return CONTINUA;
-
 	}
-
-	// Dá mais peso para vitórias e derrotas mais próximas (com menos jogadas)
 	if(primeiroResultado>CONTINUA){
 		primeiroResultado-=jogadasFeitas;
 	}
 	else{
 		primeiroResultado+=jogadasFeitas;
 	}
-
-	// Retorna o resultado do estado atual do tabuleiro
 	return primeiroResultado;
-
+}
+int qualquerVazio(int *tabuleiro){
+	int posicao;
+	posicao=(rand()%61);
+	while(tabuleiro[posicao]!=VAZIO){
+		posicao=(rand()%61);
+	}
+	return posicao;
 }
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;

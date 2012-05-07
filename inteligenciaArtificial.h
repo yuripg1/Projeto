@@ -10,8 +10,10 @@
 #define CONTINUA 0
 #define VITORIA 100
 #define BETA 200
-int jogadaComputador(int *tabuleiro,int corComputador,int jogadasFeitas,int profundidadeMinimax);
-int minimax(int *tabuleiro,int profundidade,int corComputador,int jogadasFeitas,int alfa,int beta,clock_t tempoLimite);
+int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador);
+int primeiroMax(clock_t tempoLimite,int jogadasFeitas,int profundidade,int *tabuleiro,int corComputador);
+int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta);
+int qualquerVazio(int *tabuleiro);
 int primeiroVazio(int *tabuleiro);
 int temVizinho1(int *tabuleiro,int posicao);
 int temVizinho2(int *tabuleiro,int posicao);

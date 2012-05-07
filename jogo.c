@@ -61,7 +61,7 @@ void jogo(){
 				}
 			}
 			else{
-				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->corAtual,jogo->jogadasFeitas,jogo->profundidadeMinimax));
+				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->profundidadeMinimax,jogo->jogadasFeitas,jogo->corAtual));
 			}
 			estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador,jogo->jogadasFeitas);
 		}
@@ -175,7 +175,7 @@ int profundidadeMinimax(struct JOGO *jogo){
 	int i=0,resposta,posicaoXAnterior=40;
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
-	cputsxy(41,6,"Defina a profundidade do minimax: (1-61)");
+	cputsxy(41,6,"Defina a profundidade do minimax: (4-61)");
 	gotoxy(41,7);
 	while(i<3){
 		profundidadeMinimax[i]=getch();
@@ -196,7 +196,7 @@ int profundidadeMinimax(struct JOGO *jogo){
 		if(profundidadeMinimax[i]==ENTER){
 			profundidadeMinimax[i]='\0';
 			resposta=atoi(profundidadeMinimax);
-			if((resposta>0)&&(resposta<62)){
+			if((resposta>3)&&(resposta<62)){
 				cputsxy(41,8,"                                ");
 				gotoxy(1,1);
 				return resposta;
