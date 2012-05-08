@@ -132,7 +132,7 @@ int escolheCorJogador(struct JOGO *jogo){
 	int tecla;
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
-	cputsxy(41,2,"Escolha a cor com que deseja jogar:");
+	cputsxy(41,2,"Sua cor:");
 	do{
 		if(corSelecionada==BRANCO){
 			textbackground(LIGHTRED);
@@ -175,7 +175,7 @@ int profundidadeMinimax(struct JOGO *jogo){
 	int i=0,resposta,posicaoXAnterior=40;
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
-	cputsxy(41,6,"Defina a profundidade do minimax: (4-61)");
+	cputsxy(41,6,"Profundidade do minimax: (4-61)");
 	gotoxy(41,7);
 	while(i<3){
 		profundidadeMinimax[i]=getch();
