@@ -10,28 +10,29 @@ struct JOGO{
 	int profundidadeMinimax;
 	int jogadasFeitas;
 	int podeDesfazer;
+	int numeroAlocacoes;
 };
 
 O tabuleiro é um vetor de 61 inteiros com um dos três estados:
-
 VAZIO	- Está vazio
 BRANCO	- Contém uma peça branca
 PRETO	- Contém uma perça preta
 
-O trabalho é basicamente no arquivo "inteligenciaArtificial.c", a partir da função "jogadaComputador()".
-Esta função retorna um inteiro entre 0 e 60 referente a posição no tabuleiro que o computador vai jogar.
-É a partir dela que fazemos todo o processamento da melhor jogada possível, chamando um minimax com corte alfa-beta.
-A função "jogadaComputador()" chama a "primeiroMax()" que então chama várias "minimax()".
-A função "minimax()" avalia as jogadas usando a função "resultadoJogo()".
+O trabalho será basicamente nos arquivos "inteligenciaArtificial.c" e "inteligenciaArtificial.h", a partir da função "jogadaComputador()".
+Esta função deverá retornar um inteiro entre 0 e 60 referente a posição no tabuleiro que o computador vai jogar.
+Será a partir dela que faremos todo o processamento da melhor jogada possível, chamando um minimax com corte alfa-beta provavelmente.
 
-A função "resultadoJogo()" recebe o tabuleiro, a cor a ser avaliada e o numero de jogadas feitas e retorna um dos seguintes valores:
-
+Uma função muito importante a ser usada no minimax já está pronta.
+É a "resultadoJogo()"
+Ela recebe o tabuleiro, a cor a ser avaliada e o numero de jogadas feitas e retorna um dos seguintes valores:
 DERROTA		- Quando o jogador em avaliação perde
-EMPATE		- Quando ocorre um empate
+EMPATE		- Quando ocorre um empate com o tabuleiro cheio
 CONTINUA	- Quando não há resultado e o jogo ainda tem continuação
 VITORIA		- Quando o jogador em avaliação ganha
 
 Também há a função "jogadaValida()", que retorna:
-
 SIM	- Posição está vazia e a jogada pode ser feita para preenchê-la
 NAO	- Posição já está ocupada e a jogada para preenchê-la não será possível
+
+A função "jogadaComputador()" já implementa o algoritmo minimax (da função "minimax()).
+O minimax já tem implementada a poda alfa-beta

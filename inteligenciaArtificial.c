@@ -279,90 +279,18 @@ int formaSequencia3(int *tabuleiro,int posicao,int corJogador){
 	return CONTINUA;
 }
 int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
-	int i=26,sequencia,vitoria=NAO,derrota=NAO;
-
-	while(i<33){
+	int i=0,sequencia,vitoria=NAO,derrota=NAO;
+	while(i<3){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia1(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=58;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=58;
 				}
 				else{
 					derrota=SIM;
-				}
-			}
-		}
-		i++;
-	}
-	if(i!=59){
-		i=18;
-	}
-	while(i<24){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i,corJogador);
-			if(sequencia!=CONTINUA){
-				i=58;
-				if(sequencia==VITORIA){
-					vitoria=SIM;
-				}
-				else{
-					derrota=SIM;
-				}
-			}
-		}
-		i++;
-	}
-	if(i!=59){
-		i=35;
-	}
-	while(i<41){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i,corJogador);
-			if(sequencia!=CONTINUA){
-				i=58;
-				if(sequencia==VITORIA){
-					vitoria=SIM;
-				}
-				else{
-					derrota=SIM;
-				}
-			}
-		}
-		i++;
-	}
-	if(i!=59){
-		i=11;
-	}
-	while(i<16){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i,corJogador);
-			if(sequencia!=CONTINUA){
-				i=58;
-				if(sequencia==VITORIA){
-					vitoria=SIM;
-				}
-				else{
-					derrota=SIM;
-				}
-			}
-		}
-		i++;
-	}
-	if(i!=59){
-		i=43;
-	}
-	while(i<48){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i,corJogador);
-			if(sequencia!=CONTINUA){
-				i=58;
-				if(sequencia==VITORIA){
-					vitoria=SIM;
-				}
-				else{
-					derrota=SIM;
+					i=58;
 				}
 			}
 		}
@@ -375,12 +303,108 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia1(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=58;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=58;
 				}
 				else{
 					derrota=SIM;
+					i=58;
+				}
+			}
+		}
+		i++;
+	}
+	if(i!=59){
+		i=11;
+	}
+	while(i<16){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				if(sequencia==VITORIA){
+					vitoria=SIM;
+					i=58;
+				}
+				else{
+					derrota=SIM;
+					i=58;
+				}
+			}
+		}
+		i++;
+	}
+	if(i!=59){
+		i=18;
+	}
+	while(i<24){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				if(sequencia==VITORIA){
+					vitoria=SIM;
+					i=58;
+				}
+				else{
+					derrota=SIM;
+					i=58;
+				}
+			}
+		}
+		i++;
+	}
+	if(i!=59){
+		i=26;
+	}
+	while(i<33){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				if(sequencia==VITORIA){
+					vitoria=SIM;
+					i=58;
+				}
+				else{
+					derrota=SIM;
+					i=58;
+				}
+			}
+		}
+		i++;
+	}
+	if(i!=59){
+		i=35;
+	}
+	while(i<41){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				if(sequencia==VITORIA){
+					vitoria=SIM;
+					i=58;
+				}
+				else{
+					derrota=SIM;
+					i=58;
+				}
+			}
+		}
+		i++;
+	}
+	if(i!=59){
+		i=43;
+	}
+	while(i<48){
+		if(tabuleiro[i]!=VAZIO){
+			sequencia=formaSequencia1(tabuleiro,i,corJogador);
+			if(sequencia!=CONTINUA){
+				if(sequencia==VITORIA){
+					vitoria=SIM;
+					i=58;
+				}
+				else{
+					derrota=SIM;
+					i=58;
 				}
 			}
 		}
@@ -393,30 +417,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia1(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=58;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=58;
 				}
 				else{
 					derrota=SIM;
-				}
-			}
-		}
-		i++;
-	}
-	if(i!=59){
-		i=0;
-	}
-	while(i<3){
-		if(tabuleiro[i]!=VAZIO){
-			sequencia=formaSequencia1(tabuleiro,i,corJogador);
-			if(sequencia!=CONTINUA){
-				i=58;
-				if(sequencia==VITORIA){
-					vitoria=SIM;
-				}
-				else{
-					derrota=SIM;
+					i=58;
 				}
 			}
 		}
@@ -429,12 +436,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia1(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=58;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=58;
 				}
 				else{
 					derrota=SIM;
+					i=58;
 				}
 			}
 		}
@@ -445,12 +453,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia2(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=11;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=11;
 				}
 				else{
 					derrota=SIM;
+					i=11;
 				}
 			}
 		}
@@ -463,12 +472,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia2(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=11;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=11;
 				}
 				else{
 					derrota=SIM;
+					i=11;
 				}
 			}
 		}
@@ -481,12 +491,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia2(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=11;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=11;
 				}
 				else{
 					derrota=SIM;
+					i=11;
 				}
 			}
 		}
@@ -499,12 +510,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia2(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=11;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=11;
 				}
 				else{
 					derrota=SIM;
+					i=11;
 				}
 			}
 		}
@@ -517,12 +529,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia2(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=11;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=11;
 				}
 				else{
 					derrota=SIM;
+					i=11;
 				}
 			}
 		}
@@ -533,12 +546,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia3(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=47;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=47;
 				}
 				else{
 					derrota=SIM;
+					i=47;
 				}
 			}
 		}
@@ -551,12 +565,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia3(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=47;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=47;
 				}
 				else{
 					derrota=SIM;
+					i=47;
 				}
 			}
 		}
@@ -569,12 +584,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia3(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=47;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=47;
 				}
 				else{
 					derrota=SIM;
+					i=47;
 				}
 			}
 		}
@@ -587,12 +603,13 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia3(tabuleiro,i,corJogador);
 			if(sequencia!=CONTINUA){
-				i=47;
 				if(sequencia==VITORIA){
 					vitoria=SIM;
+					i=47;
 				}
 				else{
 					derrota=SIM;
+					i=47;
 				}
 			}
 		}
