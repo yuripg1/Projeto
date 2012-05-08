@@ -18,7 +18,6 @@ struct JOGO{
 	int profundidadeMinimax;
 	int jogadasFeitas;
 	int podeDesfazer;
-	int numeroAlocacoes;
 };
 void jogo();
 struct JOGO *inicializaJogo();
