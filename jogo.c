@@ -69,15 +69,15 @@ void jogo(){
 		textbackground(DARKGRAY);
 		textcolor(BLACK);
 		if(estadoJogo==EMPATE){
-			cputsxy(41,17,"O jogo acabou em empate!");
+			cputsxy(41,18,"O jogo acabou em empate!");
 		}
 		if(estadoJogo==VITORIA){
-			cputsxy(41,17,"Voce ganhou! O computador perdeu!");
+			cputsxy(41,18,"Voce ganhou! O computador perdeu!");
 		}
 		if(estadoJogo==DERROTA){
-			cputsxy(41,17,"Voce perdeu! O computador ganhou!");
+			cputsxy(41,18,"Voce perdeu! O computador ganhou!");
 		}
-		cputsxy(41,18,"Pressione ESC para sair.");
+		cputsxy(41,19,"Pressione ESC para sair.");
 		gotoxy(1,1);
 		teclaValida=NAO;
 		while(teclaValida==NAO){
@@ -85,15 +85,15 @@ void jogo(){
 			if(((tecla=='d')||(tecla=='D'))){
 				if(jogo->jogadasFeitas==61){
 					if(jogo->corJogador==PRETO){
-						cputsxy(41,17,"                                 ");
-						cputsxy(41,18,"                        ");
+						cputsxy(41,18,"                                 ");
+						cputsxy(41,19,"                        ");
 						desfazJogadas(jogo);
 						teclaValida=SIM;
 					}
 				}
 				else{
-					cputsxy(41,17,"                                 ");
-					cputsxy(41,18,"                        ");
+					cputsxy(41,18,"                                 ");
+					cputsxy(41,19,"                        ");
 					if(jogo->corAtual!=jogo->corJogador){
 						desfazUmaJogada(jogo);
 					}
