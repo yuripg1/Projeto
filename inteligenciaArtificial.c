@@ -15,8 +15,6 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	melhorJogada=qualquerVazio(tabuleiro);
 	ultimoNivel=clock();
 	proximaJogada=melhorJogada;
-	textbackground(DARKGRAY);
-	textcolor(BLACK);
 	while((clock()<tempoLimite)&&(analiseCompleta==NAO)){
 		proximaJogada=melhorJogada;
 		ultimoNivel=clock();
@@ -45,8 +43,8 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	return proximaJogada;
 }
 int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
-	int i=0,resultado,jogadasOtimas[61],numeroJogadasOtimas=1,melhorResultado=ALFA;
-	while(i<61){
+	int i=60,resultado,jogadasOtimas[61],numeroJogadasOtimas=1,melhorResultado=ALFA;
+	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corComputador;
 			resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,ALFA,BETA);
@@ -55,16 +53,15 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 				jogadasOtimas[numeroJogadasOtimas]=i;
 				numeroJogadasOtimas++;
 			}
-			else{
+			else
 				if(resultado>melhorResultado){
 					melhorResultado=resultado;
 					jogadasOtimas[0]=i;
 					numeroJogadasOtimas=1;
 				}
-			}
 		}
-		i++;
-	}
+		i--;
+	}while(i>=0);
 	return jogadasOtimas[rand()%numeroJogadasOtimas];
 }
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta){
@@ -78,57 +75,50 @@ int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeit
 			int cor,i=30,resultado,proximo=0;
 			cor=(jogadasFeitas%2)?PRETO:BRANCO;
 			if(cor==corComputador){
-				while(i>(-1)){
+				do{
 					if(tabuleiro[i]==VAZIO){
 						tabuleiro[i]=cor;
 						resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,alfa,beta);
 						tabuleiro[i]=VAZIO;
 						if(resultado>alfa){
-							if(beta<=resultado){
+							if(beta<=resultado)
 								return resultado;
-							}
 							alfa=resultado;
 						}
 					}
-					if(proximo<0){
+					if(proximo<0)
 						proximo--;
-					}
-					else{
+					else
 						proximo++;
-					}
 					proximo*=(-1);
 					i+=proximo;
-				}
+				}while(i>=0);
 				return alfa;
 			}
-			while(i>(-1)){
+			do{
 				if(tabuleiro[i]==VAZIO){
 					tabuleiro[i]=cor;
 					resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,alfa,beta);
 					tabuleiro[i]=VAZIO;
 					if(resultado<beta){
-						if(resultado<=alfa){
+						if(resultado<=alfa)
 							return resultado;
-						}
 						beta=resultado;
 					}
 				}
-				if(proximo<0){
+				if(proximo<0)
 					proximo--;
-				}
-				else{
+				else
 					proximo++;
-				}
 				proximo*=(-1);
 				i+=proximo;
-			}
+			}while(i>=0);
 			return beta;
 		}
 		return CONTINUA;
 	}
-	if(primeiroResultado>CONTINUA){
+	if(primeiroResultado>CONTINUA)
 		return (primeiroResultado-jogadasFeitas);
-	}
 	return (primeiroResultado+jogadasFeitas);
 }
 int qualquerVazio(int *tabuleiro){
@@ -160,15 +150,22 @@ int temVizinho1(int *tabuleiro,int posicao){
 		case 60:	return SEM_VIZINHO;
 	}
 	vizinho=posicao+1;
-	if(tabuleiro[posicao]==tabuleiro[vizinho]){
+	if(tabuleiro[posicao]==tabuleiro[vizinho])
 		return vizinho;
-	}
 	return SEM_VIZINHO;
 }
 int temVizinho2(int *tabuleiro,int posicao){
 	int vizinho;
-	if((posicao<5)||(posicao==34)||(posicao==25)||(posicao==17)||(posicao==10)){
-		return SEM_VIZINHO;
+	switch(posicao){
+		case 34:	
+		case 25:	
+		case 17:	
+		case 10:	
+		case 4:		
+		case 3:		
+		case 2:		
+		case 1:		
+		case 0:		return SEM_VIZINHO;
 	}
 	if((posicao>25)&&(posicao<43)){
 		vizinho=posicao-8;
@@ -220,11 +217,11 @@ int temVizinho3(int *tabuleiro,int posicao){
 int formaSequencia1(int *tabuleiro,int posicao,int corJogador){
 	int numeroVizinhos=1,vizinho=temVizinho1(tabuleiro,posicao);
 	while(vizinho!=SEM_VIZINHO){
-		numeroVizinhos++;
+		numeroVizinhos--;
 		vizinho=temVizinho1(tabuleiro,vizinho);
 	}
-	if(numeroVizinhos>2){
-		if(numeroVizinhos==3){
+	if(numeroVizinhos<0){
+		if(numeroVizinhos==(-1)){
 			if(tabuleiro[posicao]==corJogador){
 				return DERROTA;
 			}
@@ -240,11 +237,11 @@ int formaSequencia1(int *tabuleiro,int posicao,int corJogador){
 int formaSequencia2(int *tabuleiro,int posicao,int corJogador){
 	int numeroVizinhos=1,vizinho=temVizinho2(tabuleiro,posicao);
 	while(vizinho!=SEM_VIZINHO){
-		numeroVizinhos++;
+		numeroVizinhos--;
 		vizinho=temVizinho2(tabuleiro,vizinho);
 	}
-	if(numeroVizinhos>2){
-		if(numeroVizinhos==3){
+	if(numeroVizinhos<0){
+		if(numeroVizinhos==(-1)){
 			if(tabuleiro[posicao]==corJogador){
 				return DERROTA;
 			}
@@ -260,11 +257,11 @@ int formaSequencia2(int *tabuleiro,int posicao,int corJogador){
 int formaSequencia3(int *tabuleiro,int posicao,int corJogador){
 	int numeroVizinhos=1,vizinho=temVizinho3(tabuleiro,posicao);
 	while(vizinho!=SEM_VIZINHO){
-		numeroVizinhos++;
+		numeroVizinhos--;
 		vizinho=temVizinho3(tabuleiro,vizinho);
 	}
-	if(numeroVizinhos>2){
-		if(numeroVizinhos==3){
+	if(numeroVizinhos<0){
+		if(numeroVizinhos==(-1)){
 			if(tabuleiro[posicao]==corJogador){
 				return DERROTA;
 			}
@@ -576,7 +573,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 		}
 		while(i<33);
 		if(i!=48){
-		i=35;
+			i=35;
 			do{
 				if(tabuleiro[i]!=VAZIO){
 					sequencia=formaSequencia3(tabuleiro,i,corJogador);
