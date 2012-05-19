@@ -1,14 +1,12 @@
 #include <conio2.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include "desenhoTabuleiro.h"
 #include "inteligenciaArtificial.h"
 #include "jogo.h"
 void jogo(){
 	int acabou=NAO,tecla,estadoJogo,posicao,novaPosicao,escolhaFeita,teclaValida;
 	struct JOGO *jogo;
-	srand(time(NULL));
 	jogo=inicializaJogo();
 	jogo->corJogador=escolheCorJogador(jogo);
 	jogo->profundidadeMinimax=profundidadeMinimax(jogo);

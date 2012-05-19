@@ -1,5 +1,6 @@
 #ifndef INTELIGENCIA_ARTIFICIAL_H
 #define INTELIGENCIA_ARTIFICIAL_H
+#include <time.h>
 #define VAZIO 0
 #define NAO 0
 #define SIM 1
@@ -13,8 +14,8 @@
 int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador);
 int primeiroMax(clock_t tempoLimite,int jogadasFeitas,int profundidade,int *tabuleiro,int corComputador);
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta);
-int qualquerVazio(int *tabuleiro);
 int primeiroVazio(int *tabuleiro);
+int primeiroVazio2(int *tabuleiro);
 int temVizinho1(int *tabuleiro,int posicao);
 int temVizinho2(int *tabuleiro,int posicao);
 int temVizinho3(int *tabuleiro,int posicao);

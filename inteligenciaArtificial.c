@@ -1,7 +1,6 @@
 #include <conio2.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include "desenhoTabuleiro.h"
 #include "inteligenciaArtificial.h"
 int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador){
@@ -12,7 +11,7 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	analiseCompleta=NAO;
 	profundidadeInicial=profundidade;
 	profundidade--;
-	melhorJogada=qualquerVazio(tabuleiro);
+	melhorJogada=primeiroVazio2(tabuleiro);
 	ultimoNivel=clock();
 	proximaJogada=melhorJogada;
 	while((clock()<tempoLimite)&&(analiseCompleta==NAO)){
@@ -40,29 +39,21 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	return proximaJogada;
 }
 int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
-	int i=30,resultado,jogadasOtimas[61],numeroJogadasOtimas=1,melhorResultado=ALFA,proximo=0;
+	int i=30,resultado,melhorJogada=30,melhorResultado=ALFA,proximo=0;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corComputador;
 			resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,ALFA,BETA);
 			tabuleiro[i]=VAZIO;
-			if(resultado==melhorResultado){
-				jogadasOtimas[numeroJogadasOtimas]=i;
-				numeroJogadasOtimas++;
+			if(resultado>melhorResultado){
+				melhorResultado=resultado;
+				melhorJogada=i;
 			}
-			else
-				if(resultado>melhorResultado){
-					melhorResultado=resultado;
-					jogadasOtimas[0]=i;
-					numeroJogadasOtimas=1;
-				}
 		}
 		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
 		i+=proximo;
 	}while(i>=0);
-	if(numeroJogadasOtimas>1)
-		return jogadasOtimas[rand()%(numeroJogadasOtimas/2)];
-	return jogadasOtimas[0];
+	return melhorJogada;
 }
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta){
 	int primeiroResultado;
@@ -114,17 +105,19 @@ int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeit
 		return (DERROTA+jogadasFeitas);
 	return CONTINUA;
 }
-int qualquerVazio(int *tabuleiro){
-	int posicao;
-	posicao=(rand()%61);
-	while(tabuleiro[posicao]!=VAZIO)
-		posicao=(rand()%61);
-	return posicao;
-}
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;
-	while(jogadaValida(tabuleiro,posicao)==NAO)
+	while(tabuleiro[posicao]!=VAZIO){
 		posicao++;
+	}
+	return posicao;
+}
+int primeiroVazio2(int *tabuleiro){
+	int posicao=30,proximo=0;
+	while(tabuleiro[posicao]!=VAZIO){
+		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
+		posicao+=proximo;
+	}
 	return posicao;
 }
 int temVizinho1(int *tabuleiro,int posicao){
