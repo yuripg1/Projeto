@@ -10,10 +10,6 @@
 #define CONTINUA 0
 #define VITORIA 100
 #define BETA 200
-#define DERROTA_BRANCO (-201)
-#define VITORIA_BRANCO 101
-#define DERROTA_PRETO (-202)
-#define VITORIA_PRETO 102
 int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador);
 int primeiroMax(clock_t tempoLimite,int jogadasFeitas,int profundidade,int *tabuleiro,int corComputador);
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta);
