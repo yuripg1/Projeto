@@ -40,7 +40,7 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	return proximaJogada;
 }
 int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
-	int i=60,resultado,jogadasOtimas[61],numeroJogadasOtimas=1,melhorResultado=ALFA;
+	int i=30,resultado,jogadasOtimas[61],numeroJogadasOtimas=1,melhorResultado=ALFA,proximo=0;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corComputador;
@@ -57,9 +57,12 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 					numeroJogadasOtimas=1;
 				}
 		}
-		i--;
+		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
+		i+=proximo;
 	}while(i>=0);
-	return jogadasOtimas[rand()%numeroJogadasOtimas];
+	if(numeroJogadasOtimas>1)
+		return jogadasOtimas[rand()%(numeroJogadasOtimas/2)];
+	return jogadasOtimas[0];
 }
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta){
 	int primeiroResultado;
