@@ -36,6 +36,7 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	cputsxy(41,15,"Tempo de raciocinio:");
 	gotoxy(41,16);
 	printf("%1.3f segundos",((float)(clock()-tempoInicio))/((float)CLOCKS_PER_SEC));
+	gotoxy(1,1);
 	return proximaJogada;
 }
 int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
@@ -53,6 +54,24 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
 		i+=proximo;
 	}while(i>=0);
+	textbackground(DARKGRAY);
+	textcolor(BLACK);
+	if(clock()<tempoLimite){
+		if(melhorResultado>CONTINUA){
+			cputsxy(41,18,"E provavel que voce perca.       ");
+			textbackground(LIGHTRED);
+			cputsxy(67,18," ");
+		}
+		else
+			if(melhorResultado<EMPATE){
+				cputsxy(41,18,"E provavel que voce ganhe.       ");
+				textbackground(LIGHTGREEN);
+				cputsxy(67,18," ");
+			}
+			else
+				cputsxy(41,18,"Nao ha estimativa de resultado.  ");
+	}
+	gotoxy(1,1);
 	return melhorJogada;
 }
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta){
@@ -100,9 +119,9 @@ int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeit
 		return CONTINUA;
 	}
 	if(primeiroResultado>=CONTINUA)
-		return VITORIA;
+		return (VITORIA-jogadasFeitas);
 	if(primeiroResultado==DERROTA)
-		return DERROTA;
+		return (DERROTA+jogadasFeitas);
 	return CONTINUA;
 }
 int primeiroVazio(int *tabuleiro){

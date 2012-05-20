@@ -65,17 +65,20 @@ void jogo(){
 			estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador,jogo->jogadasFeitas);
 		}
 		jogadorRodada(jogo->corAtual);
-		textbackground(DARKGRAY);
 		textcolor(BLACK);
 		if(estadoJogo==EMPATE){
-			cputsxy(41,18,"O jogo acabou em empate!");
+			textbackground(DARKGRAY);
+			cputsxy(41,18,"O jogo acabou em empate!         ");
 		}
 		if(estadoJogo==VITORIA){
+			textbackground(LIGHTGREEN);
 			cputsxy(41,18,"Voce ganhou! O computador perdeu!");
 		}
 		if(estadoJogo==DERROTA){
+			textbackground(LIGHTRED);
 			cputsxy(41,18,"Voce perdeu! O computador ganhou!");
 		}
+		textbackground(DARKGRAY);
 		cputsxy(41,19,"Pressione ESC para sair.");
 		gotoxy(1,1);
 		teclaValida=NAO;
@@ -134,7 +137,7 @@ int escolheCorJogador(struct JOGO *jogo){
 	cputsxy(41,2,"Sua cor:");
 	do{
 		if(corSelecionada==BRANCO){
-			textbackground(LIGHTRED);
+			textbackground(LIGHTBLUE);
 		}
 		if(corSelecionada==PRETO){
 			textbackground(DARKGRAY);
@@ -144,7 +147,7 @@ int escolheCorJogador(struct JOGO *jogo){
 			textbackground(DARKGRAY);
 		}
 		if(corSelecionada==PRETO){
-			textbackground(LIGHTRED);
+			textbackground(LIGHTBLUE);
 		}
 		cputsxy(41,4,"- Preto");
 		gotoxy(1,1);
@@ -215,7 +218,7 @@ void escreveComandos(){
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
 	cputsxy(41,9,"Comandos:");
-	cputsxy(41,10,"[D] - Desfazer jogada");
+	cputsxy(41,10,"[D] - Desfazer jogada.");
 	gotoxy(1,1);
 }
 void jogadorRodada(int corAtual){
