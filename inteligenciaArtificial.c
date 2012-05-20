@@ -43,7 +43,7 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corComputador;
-			resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,ALFA,BETA);
+			resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,melhorResultado,BETA);
 			tabuleiro[i]=VAZIO;
 			if(resultado>melhorResultado){
 				melhorResultado=resultado;
