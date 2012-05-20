@@ -1,4 +1,5 @@
 #include <conio2.h>
+#include "constantes.h"
 #include "desenhoTabuleiro.h"
 void limpaTela(){
 	int y;
@@ -149,6 +150,7 @@ void poeFoco(int posicao){
 	textcolor(BLACK);
 	posicaoDesenho(posicao,&posicaoX,&posicaoY);
 	cputsxy(posicaoX+1,posicaoY+1,"   ");
+	gotoxy(1,1);
 }
 void tiraFoco(int posicao){
 	int posicaoX=0,posicaoY=0;
@@ -156,4 +158,5 @@ void tiraFoco(int posicao){
 	textcolor(BLACK);
 	posicaoDesenho(posicao,&posicaoX,&posicaoY);
 	cputsxy(posicaoX+1,posicaoY+1,"   ");
+	gotoxy(1,1);
 }

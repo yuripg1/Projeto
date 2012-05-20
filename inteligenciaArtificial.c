@@ -1,7 +1,7 @@
 #include <conio2.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "desenhoTabuleiro.h"
+#include "constantes.h"
 #include "inteligenciaArtificial.h"
 int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador){
 	clock_t tempoInicio,tempoLimite,ultimoNivel;
@@ -26,12 +26,12 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	}
 	if(analiseCompleta==NAO)
 		profundidade--;
+	if(profundidadeInicial>profundidade)
+		profundidade=0;
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
 	cputsxy(67,7," ");
 	gotoxy(41,7);
-	if(profundidadeInicial>profundidade)
-		profundidade=0;
 	printf("%d niveis em %1.3f segundos",profundidade,((float)(ultimoNivel-tempoInicio))/((float)CLOCKS_PER_SEC));
 	cputsxy(41,15,"Tempo de raciocinio:");
 	gotoxy(41,16);

@@ -1,16 +1,6 @@
 #ifndef INTELIGENCIA_ARTIFICIAL_H
 #define INTELIGENCIA_ARTIFICIAL_H
 #include <time.h>
-#define VAZIO 0
-#define NAO 0
-#define SIM 1
-#define SEM_VIZINHO (-1)
-#define ALFA (-300)
-#define DERROTA (-200)
-#define EMPATE (-100)
-#define CONTINUA 0
-#define VITORIA 100
-#define BETA 200
 int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador);
 int primeiroMax(clock_t tempoLimite,int jogadasFeitas,int profundidade,int *tabuleiro,int corComputador);
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta);

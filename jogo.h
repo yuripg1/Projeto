@@ -1,13 +1,5 @@
 #ifndef JOGO_H
 #define JOGO_H
-#define ENTER 13
-#define BACKSPACE 8
-#define ESC 27
-#define SETA 224
-#define SETA_CIMA 72
-#define SETA_BAIXO 80
-#define SETA_ESQUERDA 75
-#define SETA_DIREITA 77
 struct JOGO{
 	int *tabuleiro;
 	int ultimaJogada;
