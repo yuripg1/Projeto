@@ -36,6 +36,7 @@
 		<Linker>
 			<Add library="conio" />
 		</Linker>
+		<Unit filename="constantes.h" />
 		<Unit filename="desenhoTabuleiro.c">
 			<Option compilerVar="CC" />
 		</Unit>
