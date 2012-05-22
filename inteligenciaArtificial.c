@@ -119,7 +119,7 @@ int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeit
 		return CONTINUA;
 	}
 	if(primeiroResultado>=CONTINUA)
-		return (VITORIA-jogadasFeitas);
+		return VITORIA;
 	if(primeiroResultado==DERROTA)
 		return (DERROTA+jogadasFeitas);
 	return CONTINUA;
