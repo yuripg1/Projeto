@@ -145,13 +145,13 @@ int temVizinho2(int *tabuleiro,int posicao){
 		case 1:
 		case 0: return SEM_VIZINHO;
 	}
-	if((posicao>25)&&(posicao<43))
+	if((posicao>=26)&&(posicao<43))
 		vizinho=posicao-8;
 	else
-		if((posicao>17)&&(posicao<50))
+		if((posicao>=18)&&(posicao<50))
 			vizinho=posicao-7;
 		else
-			vizinho=((posicao>10)&&(posicao<56))?(posicao-6):(posicao-5);
+			vizinho=((posicao>=11)&&(posicao<56))?(posicao-6):(posicao-5);
 	if(tabuleiro[posicao]==tabuleiro[vizinho])
 		return vizinho;
 	return SEM_VIZINHO;
@@ -169,13 +169,13 @@ int temVizinho3(int *tabuleiro,int posicao){
 		case 59:
 		case 60: return SEM_VIZINHO;
 	}
-	if((posicao>17)&&(posicao<35))
+	if((posicao>=18)&&(posicao<35))
 		vizinho=posicao+9;
 	else
-		if((posicao>10)&&(posicao<43))
+		if((posicao>=11)&&(posicao<43))
 			vizinho=posicao+8;
 		else
-			vizinho=((posicao>4)&&(posicao<50))?(posicao+7):(posicao+6);
+			vizinho=((posicao>=5)&&(posicao<50))?(posicao+7):(posicao+6);
 	if(tabuleiro[posicao]==tabuleiro[vizinho])
 		return vizinho;
 	return SEM_VIZINHO;
