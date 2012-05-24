@@ -4,6 +4,24 @@
 #include "constantes.h"
 #include "inteligenciaArtificial.h"
 CRITICAL_SECTION gravacaoResultado;
+int vizinhos2[61]={	SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO,
+					0,1,2,3,4,SEM_VIZINHO,
+					5,6,7,8,9,10,SEM_VIZINHO,
+					11,12,13,14,15,16,17,SEM_VIZINHO,
+					18,19,20,21,22,23,24,25,SEM_VIZINHO,
+					27,28,29,30,31,32,33,34,
+					36,37,38,39,40,41,42,
+					44,45,46,47,48,49,
+					51,52,53,54,55};
+int vizinhos3[61]={	6,7,8,9,10,
+					12,13,14,15,16,17,
+					19,20,21,22,23,24,25,
+					27,28,29,30,31,32,33,34,
+					35,36,37,38,39,40,41,42,SEM_VIZINHO,
+					43,44,45,46,47,48,49,SEM_VIZINHO,
+					50,51,52,53,54,55,SEM_VIZINHO,
+					56,57,58,59,60,SEM_VIZINHO,
+					SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO};
 int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador){
 	clock_t tempoInicio,tempoLimite;
 	HANDLE thread[2]={0,0};
@@ -190,49 +208,13 @@ int temVizinho1(int *tabuleiro,int posicao){
 	return SEM_VIZINHO;
 }
 int temVizinho2(int *tabuleiro,int posicao){
-	int vizinho;
-	switch(posicao){
-		case 34:
-		case 25:
-		case 17:
-		case 10:
-		case 4:
-		case 3:
-		case 2:
-		case 1:
-		case 0: return SEM_VIZINHO;
-	}
-	if((posicao>=26)&&(posicao<43))
-		vizinho=posicao-8;
-	else
-		if((posicao>=18)&&(posicao<50))
-			vizinho=posicao-7;
-		else
-			vizinho=((posicao>=11)&&(posicao<56))?(posicao-6):(posicao-5);
+	int vizinho=vizinhos2[posicao];
 	if(tabuleiro[posicao]==tabuleiro[vizinho])
 		return vizinho;
 	return SEM_VIZINHO;
 }
 int temVizinho3(int *tabuleiro,int posicao){
-	int vizinho;
-	switch(posicao){
-		case 34:
-		case 42:
-		case 49:
-		case 55:
-		case 56:
-		case 57:
-		case 58:
-		case 59:
-		case 60: return SEM_VIZINHO;
-	}
-	if((posicao>=18)&&(posicao<35))
-		vizinho=posicao+9;
-	else
-		if((posicao>=11)&&(posicao<43))
-			vizinho=posicao+8;
-		else
-			vizinho=((posicao>=5)&&(posicao<50))?(posicao+7):(posicao+6);
+	int vizinho=vizinhos3[posicao];
 	if(tabuleiro[posicao]==tabuleiro[vizinho])
 		return vizinho;
 	return SEM_VIZINHO;
