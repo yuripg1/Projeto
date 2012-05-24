@@ -4,38 +4,34 @@
 #include "constantes.h"
 #include "inteligenciaArtificial.h"
 int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador){
-	clock_t tempoInicio,tempoLimite,ultimoNivel;
-	int melhorJogada,proximaJogada,analiseCompleta,profundidadeInicial;
+	clock_t tempoInicio,tempoLimite,tempoAtual,tempoUltimoNivel;
+	int analiseCompleta=NAO,profundidadeInicial=profundidade,melhorJogada,proximaJogada=primeiroVazio2(tabuleiro);
 	tempoInicio=clock();
-	tempoLimite=tempoInicio+((clock_t)(((float)CLOCKS_PER_SEC)*4.98f));
-	analiseCompleta=NAO;
-	profundidadeInicial=profundidade;
-	profundidade--;
-	melhorJogada=primeiroVazio2(tabuleiro);
-	ultimoNivel=clock();
-	proximaJogada=melhorJogada;
-	while((clock()<tempoLimite)&&(analiseCompleta==NAO)){
-		proximaJogada=melhorJogada;
-		ultimoNivel=clock();
-		if(profundidade<61){
+	tempoLimite=tempoInicio+((clock_t)(CLOCKS_PER_SEC*5));
+	tempoUltimoNivel=tempoInicio;
+	do{
+		melhorJogada=primeiroMax(tempoLimite,profundidade,jogadasFeitas,tabuleiro,corComputador);
+		tempoAtual=clock();
+		if(tempoAtual<=tempoLimite){
+			proximaJogada=melhorJogada;
+			tempoUltimoNivel=tempoAtual;
 			profundidade++;
-			melhorJogada=primeiroMax(tempoLimite,profundidade,jogadasFeitas,tabuleiro,corComputador);
+			if(profundidade==62)
+				analiseCompleta=SIM;
 		}
 		else
 			analiseCompleta=SIM;
-	}
-	if(analiseCompleta==NAO)
-		profundidade--;
-	if(profundidadeInicial>profundidade)
+	}while(analiseCompleta==NAO);
+	if(profundidadeInicial==profundidade)
 		profundidade=0;
+	else
+		profundidade--;
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
-	cputsxy(67,7," ");
-	gotoxy(41,7);
-	printf("%d niveis em %1.3f segundos",profundidade,((float)(ultimoNivel-tempoInicio))/((float)CLOCKS_PER_SEC));
 	cputsxy(41,15,"Tempo de raciocinio:");
+	cputsxy(67,16," ");
 	gotoxy(41,16);
-	printf("%1.3f segundos",((float)(clock()-tempoInicio))/((float)CLOCKS_PER_SEC));
+	printf("%d niveis em %1.3f segundos",profundidade,((float)(tempoUltimoNivel-tempoInicio))/((float)CLOCKS_PER_SEC));
 	gotoxy(1,1);
 	return proximaJogada;
 }
@@ -47,82 +43,61 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 			resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,melhorResultado,BETA);
 			tabuleiro[i]=VAZIO;
 			if(resultado>melhorResultado){
-				melhorResultado=resultado;
 				melhorJogada=i;
+				melhorResultado=resultado;
 			}
 		}
 		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
 		i+=proximo;
 	}while(i>=0);
-	textbackground(DARKGRAY);
-	textcolor(BLACK);
-	if(clock()<tempoLimite){
-		if(melhorResultado>CONTINUA){
-			cputsxy(41,18,"E provavel que voce perca.       ");
-			textbackground(LIGHTRED);
-			cputsxy(67,18," ");
-		}
-		else
-			if(melhorResultado<EMPATE){
-				cputsxy(41,18,"E provavel que voce ganhe.       ");
-				textbackground(LIGHTGREEN);
-				cputsxy(67,18," ");
-			}
-			else
-				cputsxy(41,18,"Nao ha estimativa de resultado.  ");
-	}
-	gotoxy(1,1);
 	return melhorJogada;
 }
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta){
-	int primeiroResultado;
-	primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas);
-	if(primeiroResultado==CONTINUA){
-		if(profundidade!=0){
-			int cor,i=30,resultado,proximo=0;
-			cor=(jogadasFeitas%2)?PRETO:BRANCO;
-			if(clock()>tempoLimite)
-				return CONTINUA;
-			if(cor==corComputador){
-				do{
-					if(tabuleiro[i]==VAZIO){
-						tabuleiro[i]=cor;
-						resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,alfa,beta);
-						tabuleiro[i]=VAZIO;
-						if(resultado>alfa){
-							if(beta<=resultado)
-								return resultado;
-							alfa=resultado;
-						}
-					}
-					proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
-					i+=proximo;
-				}while(i>=0);
-				return alfa;
-			}
+	int primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas);
+	if(primeiroResultado!=CONTINUA){
+		if(primeiroResultado>=CONTINUA)
+			return VITORIA;
+		if(primeiroResultado<EMPATE)
+			return (DERROTA+jogadasFeitas);
+		return CONTINUA;
+	}
+	if((profundidade==0)||(clock()>tempoLimite))
+		return CONTINUA;
+	else{
+		int cor=(jogadasFeitas%2)?PRETO:BRANCO,i=30,resultado,proximo=0;
+		if(cor==corComputador){
 			do{
 				if(tabuleiro[i]==VAZIO){
 					tabuleiro[i]=cor;
 					resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,alfa,beta);
 					tabuleiro[i]=VAZIO;
-					if(resultado<beta){
-						if(resultado<=alfa)
+					if(resultado>alfa){
+						if(beta<=resultado)
 							return resultado;
-						beta=resultado;
+						alfa=resultado;
 					}
 				}
 				proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
 				i+=proximo;
 			}while(i>=0);
-			return beta;
+			return alfa;
 		}
-		return CONTINUA;
+		do{
+			if(tabuleiro[i]==VAZIO){
+				tabuleiro[i]=cor;
+				resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,alfa,beta);
+				tabuleiro[i]=VAZIO;
+				if(resultado<beta){
+					if(resultado<=alfa)
+						return resultado;
+					beta=resultado;
+				}
+			}
+			proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
+			i+=proximo;
+		}while(i>=0);
+		return beta;
 	}
-	if(primeiroResultado>=CONTINUA)
-		return VITORIA;
-	if(primeiroResultado==DERROTA)
-		return (DERROTA+jogadasFeitas);
-	return CONTINUA;
 }
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;
@@ -141,8 +116,17 @@ int primeiroVazio2(int *tabuleiro){
 }
 int temVizinho1(int *tabuleiro,int posicao){
 	int vizinho;
-	if((posicao==34)||(posicao==25)||(posicao==42)||(posicao==17)||(posicao==49)||(posicao==10)||(posicao==55)||(posicao==4)||(posicao==60))
-		return SEM_VIZINHO;
+	switch(posicao){
+		case 34:
+		case 25:
+		case 42:
+		case 17:
+		case 49:
+		case 10:
+		case 55:
+		case 4:
+		case 60: return SEM_VIZINHO;
+	}
 	vizinho=posicao+1;
 	if(tabuleiro[posicao]==tabuleiro[vizinho])
 		return vizinho;
@@ -150,8 +134,17 @@ int temVizinho1(int *tabuleiro,int posicao){
 }
 int temVizinho2(int *tabuleiro,int posicao){
 	int vizinho;
-	if((posicao<5)||(posicao==34)||(posicao==25)||(posicao==17)||(posicao==10))
-		return SEM_VIZINHO;
+	switch(posicao){
+		case 34:
+		case 25:
+		case 17:
+		case 10:
+		case 4:
+		case 3:
+		case 2:
+		case 1:
+		case 0: return SEM_VIZINHO;
+	}
 	if((posicao>25)&&(posicao<43))
 		vizinho=posicao-8;
 	else
@@ -165,8 +158,17 @@ int temVizinho2(int *tabuleiro,int posicao){
 }
 int temVizinho3(int *tabuleiro,int posicao){
 	int vizinho;
-	if((posicao>54)||(posicao==34)||(posicao==42)||(posicao==49))
-		return SEM_VIZINHO;
+	switch(posicao){
+		case 34:
+		case 42:
+		case 49:
+		case 55:
+		case 56:
+		case 57:
+		case 58:
+		case 59:
+		case 60: return SEM_VIZINHO;
+	}
 	if((posicao>17)&&(posicao<35))
 		vizinho=posicao+9;
 	else
