@@ -3,37 +3,97 @@
 #include <stdlib.h>
 #include "constantes.h"
 #include "inteligenciaArtificial.h"
+CRITICAL_SECTION gravacaoResultado;
 int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador){
-	clock_t tempoInicio,tempoLimite,tempoAtual,tempoUltimoNivel;
-	int analiseCompleta=NAO,profundidadeInicial=profundidade,melhorJogada,proximaJogada=primeiroVazio2(tabuleiro);
+	clock_t tempoInicio,tempoLimite;
+	HANDLE thread[2]={0,0};
+	struct MINIMAX dados[2];
+	struct RESULTADO resultado;
 	tempoInicio=clock();
 	tempoLimite=tempoInicio+((clock_t)(CLOCKS_PER_SEC*5));
-	tempoUltimoNivel=tempoInicio;
-	do{
-		melhorJogada=primeiroMax(tempoLimite,profundidade,jogadasFeitas,tabuleiro,corComputador);
-		tempoAtual=clock();
-		if(tempoAtual<=tempoLimite){
-			proximaJogada=melhorJogada;
-			tempoUltimoNivel=tempoAtual;
-			profundidade++;
-			if(profundidade==62)
-				analiseCompleta=SIM;
-		}
-		else
-			analiseCompleta=SIM;
-	}while(analiseCompleta==NAO);
-	if(profundidadeInicial==profundidade)
-		profundidade=0;
-	else
-		profundidade--;
+	resultado.numeroNiveis=0;
+	resultado.tempo=tempoInicio;
+	resultado.melhorJogada=primeiroVazio2(tabuleiro);
+	InitializeCriticalSection(&gravacaoResultado);
+	dados[0].tempoLimite=tempoLimite;
+	dados[0].jogadasFeitas=jogadasFeitas;
+	dados[0].profundidade=profundidade;
+	dados[0].tabuleiro=(int*)calloc(61,sizeof(int));
+	memcpy(dados[0].tabuleiro,tabuleiro,61*sizeof(int));
+	dados[0].corComputador=corComputador;
+	dados[0].resultado=(&(resultado));
+	thread[0]=CreateThread(NULL,0,thread1,&(dados[0]),0,NULL);
+	dados[1].tempoLimite=tempoLimite;
+	dados[1].jogadasFeitas=jogadasFeitas;
+	dados[1].profundidade=profundidade+1;
+	dados[1].tabuleiro=(int*)calloc(61,sizeof(int));
+	memcpy(dados[1].tabuleiro,tabuleiro,61*sizeof(int));
+	dados[1].corComputador=corComputador;
+	dados[1].resultado=(&(resultado));
+	thread[1]=CreateThread(NULL,0,thread2,&(dados[1]),0,NULL);
+	WaitForMultipleObjects(2,thread,TRUE,INFINITE);
+	CloseHandle(thread[0]);
+	CloseHandle(thread[1]);
+	DeleteCriticalSection(&gravacaoResultado);
+	free(dados[0].tabuleiro);
+	free(dados[1].tabuleiro);
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
 	cputsxy(41,15,"Tempo de raciocinio:");
-	cputsxy(67,16," ");
 	gotoxy(41,16);
-	printf("%d niveis em %1.3f segundos",profundidade,((float)(tempoUltimoNivel-tempoInicio))/((float)CLOCKS_PER_SEC));
+	printf("%2d niveis em %1.3f segundos",resultado.numeroNiveis,((float)(resultado.tempo-tempoInicio))/((float)CLOCKS_PER_SEC));
 	gotoxy(1,1);
-	return proximaJogada;
+	return resultado.melhorJogada;
+}
+DWORD WINAPI thread1(LPVOID lpParam){
+	clock_t tempoAtual;
+	int melhorJogada,analiseFeita=NAO;
+	struct MINIMAX dados;
+	dados=(*((struct MINIMAX*)lpParam));
+	do{
+		melhorJogada=primeiroMax(dados.tempoLimite,dados.profundidade,dados.jogadasFeitas,dados.tabuleiro,dados.corComputador);
+		tempoAtual=clock();
+		if(tempoAtual<=dados.tempoLimite){
+			EnterCriticalSection(&gravacaoResultado);
+			if(dados.resultado->numeroNiveis<dados.profundidade){
+				dados.resultado->numeroNiveis=dados.profundidade;
+				dados.resultado->tempo=tempoAtual;
+				dados.resultado->melhorJogada=melhorJogada;
+			}
+			LeaveCriticalSection(&gravacaoResultado);
+			dados.profundidade+=2;
+			if(dados.profundidade>61)
+				analiseFeita=SIM;
+		}
+		else
+			analiseFeita=SIM;
+	}while(analiseFeita==NAO);
+	return 0;
+}
+DWORD WINAPI thread2(LPVOID lpParam){
+	clock_t tempoAtual;
+	int melhorJogada,analiseFeita=NAO;
+	struct MINIMAX dados;
+	dados=(*((struct MINIMAX*)lpParam));
+	do{
+		melhorJogada=primeiroMax(dados.tempoLimite,dados.profundidade,dados.jogadasFeitas,dados.tabuleiro,dados.corComputador);
+		tempoAtual=clock();
+		if(tempoAtual<=dados.tempoLimite){
+			EnterCriticalSection(&gravacaoResultado);
+			if(dados.resultado->numeroNiveis<dados.profundidade){
+				dados.resultado->numeroNiveis=dados.profundidade;
+				dados.resultado->tempo=tempoAtual;
+				dados.resultado->melhorJogada=melhorJogada;
+			}
+			LeaveCriticalSection(&gravacaoResultado);
+			dados.profundidade+=2;
+			if(dados.profundidade>61)
+				analiseFeita=SIM;
+		}
+		else
+			analiseFeita=SIM;
+	}while(analiseFeita==NAO);
+	return 0;
 }
 int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
 	int i=30,resultado,melhorJogada=30,melhorResultado=ALFA,proximo=0;
@@ -53,7 +113,7 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 	return melhorJogada;
 }
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta){
-	int primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas);
+	int primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas),cor=(jogadasFeitas%2)?PRETO:BRANCO,i=30,resultado,proximo=0;
 	if(primeiroResultado!=CONTINUA){
 		if(primeiroResultado>=CONTINUA)
 			return VITORIA;
@@ -63,41 +123,38 @@ int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeit
 	}
 	if((profundidade==0)||(clock()>tempoLimite))
 		return CONTINUA;
-	else{
-		int cor=(jogadasFeitas%2)?PRETO:BRANCO,i=30,resultado,proximo=0;
-		if(cor==corComputador){
-			do{
-				if(tabuleiro[i]==VAZIO){
-					tabuleiro[i]=cor;
-					resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,alfa,beta);
-					tabuleiro[i]=VAZIO;
-					if(resultado>alfa){
-						if(beta<=resultado)
-							return resultado;
-						alfa=resultado;
-					}
-				}
-				proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
-				i+=proximo;
-			}while(i>=0);
-			return alfa;
-		}
+	if(cor==corComputador){
 		do{
 			if(tabuleiro[i]==VAZIO){
 				tabuleiro[i]=cor;
 				resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,alfa,beta);
 				tabuleiro[i]=VAZIO;
-				if(resultado<beta){
-					if(resultado<=alfa)
+				if(resultado>alfa){
+					if(beta<=resultado)
 						return resultado;
-					beta=resultado;
+					alfa=resultado;
 				}
 			}
 			proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
 			i+=proximo;
 		}while(i>=0);
-		return beta;
+		return alfa;
 	}
+	do{
+		if(tabuleiro[i]==VAZIO){
+			tabuleiro[i]=cor;
+			resultado=minimax(tempoLimite,tabuleiro,corComputador,jogadasFeitas+1,profundidade-1,alfa,beta);
+			tabuleiro[i]=VAZIO;
+			if(resultado<beta){
+				if(resultado<=alfa)
+					return resultado;
+				beta=resultado;
+			}
+		}
+		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
+		i+=proximo;
+	}while(i>=0);
+	return beta;
 }
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;
