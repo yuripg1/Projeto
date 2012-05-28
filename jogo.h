@@ -21,4 +21,5 @@ struct JOGO *finalizaJogo(struct JOGO *jogo);
 void processaJogada(struct JOGO *jogo,int jogada);
 void desfazJogadas(struct JOGO *jogo);
 void desfazUmaJogada(struct JOGO *jogo);
+int jogadaValida(int *tabuleiro,int jogada);
 #endif

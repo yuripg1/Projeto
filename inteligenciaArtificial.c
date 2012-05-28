@@ -4,11 +4,11 @@
 #include "constantes.h"
 #include "inteligenciaArtificial.h"
 CRITICAL_SECTION gravacaoResultado;
-int proximo[61]={	1,(-1),3,4,10,
-					0,7,2,9,16,17,
-					5,6,8,15,23,24,25,
-					11,12,13,14,31,32,33,34,
-					18,19,20,21,22,39,40,41,42,
+int proximo[61]={	1,2,3,4,10,
+					(-1),7,8,9,16,17,
+					5,0,14,15,23,24,25,
+					11,12,6,22,31,32,33,34,
+					18,19,20,13,21,39,40,41,42,
 					26,27,28,29,38,47,48,49,
 					35,36,37,45,46,54,55,
 					43,44,51,52,53,60,
@@ -151,7 +151,7 @@ int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeit
 	int primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas),cor=(jogadasFeitas%2)?PRETO:BRANCO,i=30,resultado;
 	if(primeiroResultado!=CONTINUA){
 		if(primeiroResultado>=CONTINUA)
-			return VITORIA;
+			return (VITORIA-jogadasFeitas);
 		if(primeiroResultado==DERROTA)
 			return (DERROTA+jogadasFeitas);
 		return CONTINUA;
@@ -598,9 +598,4 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 	if(jogadasFeitas==61)
 		return EMPATE;
 	return CONTINUA;
-}
-int jogadaValida(int *tabuleiro,int jogada){
-	if(tabuleiro[jogada]==VAZIO)
-		return SIM;
-	return NAO;
 }

@@ -286,3 +286,8 @@ void desfazUmaJogada(struct JOGO *jogo){
 						break;
 	}
 }
+int jogadaValida(int *tabuleiro,int jogada){
+	if(tabuleiro[jogada]==VAZIO)
+		return SIM;
+	return NAO;
+}

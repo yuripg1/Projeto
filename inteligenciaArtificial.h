@@ -24,5 +24,4 @@ int primeiroVazio(int *tabuleiro);
 int primeiroVazio2(int *tabuleiro);
 int formaSequencia(int *tabuleiro,int posicao,int sentidoVizinho);
 int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas);
-int jogadaValida(int *tabuleiro,int jogada);
 #endif
