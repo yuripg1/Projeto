@@ -4,6 +4,15 @@
 #include "constantes.h"
 #include "inteligenciaArtificial.h"
 CRITICAL_SECTION gravacaoResultado;
+int proximo[61]={	1,(-1),3,4,10,
+					0,7,2,9,16,17,
+					5,6,8,15,23,24,25,
+					11,12,13,14,31,32,33,34,
+					18,19,20,21,22,39,40,41,42,
+					26,27,28,29,38,47,48,49,
+					35,36,37,45,46,54,55,
+					43,44,51,52,53,60,
+					50,56,57,58,59};
 int vizinhanca[183]={	1,2,3,4,SEM_VIZINHO,
 						6,7,8,9,10,SEM_VIZINHO,
 						12,13,14,15,16,17,SEM_VIZINHO,
@@ -123,7 +132,7 @@ DWORD WINAPI thread2(LPVOID lpParam){
 	return 0;
 }
 int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
-	int i=30,resultado,melhorJogada=30,melhorResultado=ALFA,proximo=0;
+	int i=30,resultado,melhorJogada=30,melhorResultado=ALFA;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corComputador;
@@ -134,15 +143,14 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 				melhorResultado=resultado;
 			}
 		}
-		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
-		i+=proximo;
+		i=proximo[i];
 	}while(i>=0);
 	return melhorJogada;
 }
 int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta){
-	int primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas),cor=(jogadasFeitas%2)?PRETO:BRANCO,i=30,resultado,proximo=0;
+	int primeiroResultado=resultadoJogo(tabuleiro,corComputador,jogadasFeitas),cor=(jogadasFeitas%2)?PRETO:BRANCO,i=30,resultado;
 	if(primeiroResultado!=CONTINUA){
-		if(primeiroResultado==VITORIA)
+		if(primeiroResultado>=CONTINUA)
 			return VITORIA;
 		if(primeiroResultado==DERROTA)
 			return (DERROTA+jogadasFeitas);
@@ -162,8 +170,7 @@ int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeit
 					alfa=resultado;
 				}
 			}
-			proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
-			i+=proximo;
+			i=proximo[i];
 		}while(i>=0);
 		return alfa;
 	}
@@ -178,24 +185,20 @@ int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeit
 				beta=resultado;
 			}
 		}
-		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
-		i+=proximo;
+		i=proximo[i];
 	}while(i>=0);
 	return beta;
 }
 int primeiroVazio(int *tabuleiro){
 	int posicao=0;
-	while(tabuleiro[posicao]!=VAZIO){
+	while(tabuleiro[posicao]!=VAZIO)
 		posicao++;
-	}
 	return posicao;
 }
 int primeiroVazio2(int *tabuleiro){
-	int posicao=30,proximo=0;
-	while(tabuleiro[posicao]!=VAZIO){
-		proximo=(proximo<0)?((proximo-1)*(-1)):((proximo+1)*(-1));
-		posicao+=proximo;
-	}
+	int posicao=30;
+	while(tabuleiro[posicao]!=VAZIO)
+		posicao=proximo[posicao];
 	return posicao;
 }
 int formaSequencia(int *tabuleiro,int posicao,int sentidoVizinho){
