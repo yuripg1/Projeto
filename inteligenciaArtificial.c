@@ -54,8 +54,7 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	dados[0].tempoLimite=tempoLimite;
 	dados[0].jogadasFeitas=jogadasFeitas;
 	dados[0].profundidade=profundidade;
-	dados[0].tabuleiro=(int*)calloc(61,sizeof(int));
-	memcpy(dados[0].tabuleiro,tabuleiro,61*sizeof(int));
+	dados[0].tabuleiro=tabuleiro;
 	dados[0].corComputador=corComputador;
 	dados[0].resultado=(&(resultado));
 	thread[0]=CreateThread(NULL,0,thread1,&(dados[0]),0,NULL);
@@ -71,7 +70,6 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 	CloseHandle(thread[0]);
 	CloseHandle(thread[1]);
 	DeleteCriticalSection(&gravacaoResultado);
-	free(dados[0].tabuleiro);
 	free(dados[1].tabuleiro);
 	textbackground(DARKGRAY);
 	textcolor(BLACK);
