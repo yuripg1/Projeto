@@ -19,9 +19,9 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 DWORD WINAPI thread1(LPVOID lpParam);
 DWORD WINAPI thread2(LPVOID lpParam);
 int primeiroMax(clock_t tempoLimite,int jogadasFeitas,int profundidade,int *tabuleiro,int corComputador);
-int minimax(clock_t tempoLimite,int *tabuleiro,int corComputador,int jogadasFeitas,int profundidade,int alfa,int beta);
-int primeiroVazio(int *tabuleiro);
-int primeiroVazio2(int *tabuleiro);
-int formaSequencia(int *tabuleiro,int posicao,int sentidoVizinho);
+int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta);
+int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta);
+int primeiroVazioCentro(int *tabuleiro);
+int formaSequencia(int *tabuleiro,int posicao,int adicaoIndice);
 int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas);
 #endif

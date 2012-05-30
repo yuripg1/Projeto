@@ -291,3 +291,9 @@ int jogadaValida(int *tabuleiro,int jogada){
 		return SIM;
 	return NAO;
 }
+int primeiroVazio(int *tabuleiro){
+	int posicao=0;
+	while(tabuleiro[posicao]!=VAZIO)
+		posicao++;
+	return posicao;
+}

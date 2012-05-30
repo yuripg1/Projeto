@@ -87,7 +87,7 @@ void desenhaJogada(int jogadaAtual,int corAtual,int jogadaAnterior){
 		cputsxy(posicaoX,posicaoY,"-----");
 	}
 	posicaoDesenho(jogadaAtual,&posicaoX,&posicaoY);
-	textbackground(LIGHTRED);
+	textbackground(BROWN);
 	cputsxy(posicaoX,posicaoY,"-----");
 	cputsxy(posicaoX,posicaoY+1,"|   |");
 	cputsxy(posicaoX,posicaoY+2,"-----");
@@ -114,7 +114,7 @@ void desenhaDesfazer(int ultimaJogada,int penultimaJogada,int antepenultimaJogad
 	cputsxy(posicaoX+1,posicaoY+1,"   ");
 	if(antepenultimaJogada!=SEM_JOGADA){
 		posicaoDesenho(antepenultimaJogada,&posicaoX,&posicaoY);
-		textbackground(LIGHTRED);
+		textbackground(BROWN);
 		cputsxy(posicaoX,posicaoY,"-----");
 		posicaoY++;
 		cputsxy(posicaoX,posicaoY,"|");
@@ -135,7 +135,7 @@ void desenhaMeioDesfazer(int ultimaJogada,int penultimaJogada){
 	posicaoY++;
 	cputsxy(posicaoX,posicaoY,"-----");
 	posicaoDesenho(penultimaJogada,&posicaoX,&posicaoY);
-	textbackground(LIGHTRED);
+	textbackground(BROWN);
 	cputsxy(posicaoX,posicaoY,"-----");
 	posicaoY++;
 	cputsxy(posicaoX,posicaoY,"|");
