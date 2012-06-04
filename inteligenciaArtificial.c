@@ -131,10 +131,12 @@ DWORD WINAPI thread2(LPVOID lpParam){
 }
 int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
 	int i=30,resultado,melhorJogada=30,melhorResultado=ALFA,proximaCor=(corComputador==BRANCO)?PRETO:BRANCO;
+	jogadasFeitas++;
+	profundidade--;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corComputador;
-			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas+1,profundidade-1,melhorResultado,BETA);
+			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,melhorResultado,BETA);
 			tabuleiro[i]=VAZIO;
 			if(resultado>melhorResultado){
 				melhorJogada=i;
@@ -146,21 +148,24 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 	return melhorJogada;
 }
 int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
-	int primeiroResultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i=30,resultado;
-	if(primeiroResultado!=CONTINUA){
-		if(primeiroResultado==DERROTA)
+	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
+	if(resultado!=CONTINUA){
+		if(resultado==DERROTA)
 			return (VITORIA-jogadasFeitas);
-		if(primeiroResultado>=CONTINUA)
+		if(resultado>=CONTINUA)
 			return (DERROTA+jogadasFeitas);
 		return CONTINUA;
 	}
 	if((profundidade==0)||(clock()>tempoLimite))
 		return CONTINUA;
 	proximaCor=(corAtual==BRANCO)?PRETO:BRANCO;
+	i=30;
+	jogadasFeitas++;
+	profundidade--;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corAtual;
-			resultado=nivelMax(tempoLimite,tabuleiro,proximaCor,jogadasFeitas+1,profundidade-1,alfa,beta);
+			resultado=nivelMax(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,alfa,beta);
 			tabuleiro[i]=VAZIO;
 			if(resultado<beta){
 				if(resultado<=alfa)
@@ -173,21 +178,24 @@ int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 	return beta;
 }
 int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
-	int primeiroResultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i=30,resultado;
-	if(primeiroResultado!=CONTINUA){
-		if(primeiroResultado>=CONTINUA)
+	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
+	if(resultado!=CONTINUA){
+		if(resultado>=CONTINUA)
 			return (VITORIA-jogadasFeitas);
-		if(primeiroResultado==DERROTA)
+		if(resultado==DERROTA)
 			return (DERROTA+jogadasFeitas);
 		return CONTINUA;
 	}
 	if((profundidade==0)||(clock()>tempoLimite))
 		return CONTINUA;
 	proximaCor=(corAtual==BRANCO)?PRETO:BRANCO;
+	i=30;
+	jogadasFeitas++;
+	profundidade--;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corAtual;
-			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas+1,profundidade-1,alfa,beta);
+			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,alfa,beta);
 			tabuleiro[i]=VAZIO;
 			if(resultado>alfa){
 				if(beta<=resultado)
