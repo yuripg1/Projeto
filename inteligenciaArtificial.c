@@ -40,7 +40,7 @@ int vizinhanca[183]={	1,2,3,4,SEM_VIZINHO,
 						50,51,52,53,54,55,SEM_VIZINHO,
 						56,57,58,59,60,SEM_VIZINHO,
 						SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO,SEM_VIZINHO};
-int jogadaComputador(int *tabuleiro,int profundidade,int corComputador){
+int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corComputador){
 	clock_t tempoInicio,tempoLimite;
 	HANDLE thread[2]={0,0};
 	struct MINIMAX dados[2];
@@ -52,12 +52,14 @@ int jogadaComputador(int *tabuleiro,int profundidade,int corComputador){
 	resultado.melhorJogada=primeiroVazioCentro(tabuleiro);
 	InitializeCriticalSection(&gravacaoResultado);
 	dados[0].tempoLimite=tempoLimite;
+	dados[0].jogadasFeitas=jogadasFeitas;
 	dados[0].profundidade=profundidade;
 	dados[0].tabuleiro=tabuleiro;
 	dados[0].corComputador=corComputador;
 	dados[0].resultado=(&(resultado));
 	thread[0]=CreateThread(NULL,0,thread1,&(dados[0]),0,NULL);
 	dados[1].tempoLimite=tempoLimite;
+	dados[1].jogadasFeitas=jogadasFeitas;
 	dados[1].profundidade=profundidade+1;
 	dados[1].tabuleiro=(int*)calloc(61,sizeof(int));
 	memcpy(dados[1].tabuleiro,tabuleiro,61*sizeof(int));
@@ -83,7 +85,7 @@ DWORD WINAPI thread1(LPVOID lpParam){
 	struct MINIMAX dados;
 	dados=(*((struct MINIMAX*)lpParam));
 	do{
-		melhorJogada=primeiroMax(dados.tempoLimite,dados.profundidade,dados.tabuleiro,dados.corComputador);
+		melhorJogada=primeiroMax(dados.tempoLimite,dados.profundidade,dados.jogadasFeitas,dados.tabuleiro,dados.corComputador);
 		tempoAtual=clock();
 		if(tempoAtual<=dados.tempoLimite){
 			EnterCriticalSection(&gravacaoResultado);
@@ -108,7 +110,7 @@ DWORD WINAPI thread2(LPVOID lpParam){
 	struct MINIMAX dados;
 	dados=(*((struct MINIMAX*)lpParam));
 	do{
-		melhorJogada=primeiroMax(dados.tempoLimite,dados.profundidade,dados.tabuleiro,dados.corComputador);
+		melhorJogada=primeiroMax(dados.tempoLimite,dados.profundidade,dados.jogadasFeitas,dados.tabuleiro,dados.corComputador);
 		tempoAtual=clock();
 		if(tempoAtual<=dados.tempoLimite){
 			EnterCriticalSection(&gravacaoResultado);
@@ -127,13 +129,14 @@ DWORD WINAPI thread2(LPVOID lpParam){
 	}while(analiseFeita==NAO);
 	return 0;
 }
-int primeiroMax(clock_t tempoLimite,int profundidade,int *tabuleiro,int corComputador){
+int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabuleiro,int corComputador){
 	int i=30,resultado,melhorJogada=30,melhorResultado=ALFA,proximaCor=(corComputador==BRANCO)?PRETO:BRANCO;
+	jogadasFeitas++;
 	profundidade--;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corComputador;
-			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,profundidade,melhorResultado,BETA);
+			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,melhorResultado,BETA);
 			tabuleiro[i]=VAZIO;
 			if(resultado>melhorResultado){
 				melhorJogada=i;
@@ -144,24 +147,25 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int *tabuleiro,int corCompu
 	}while(i>=0);
 	return melhorJogada;
 }
-int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int profundidade,int alfa,int beta){
-	int resultado=resultadoJogo(tabuleiro,corAtual),proximaCor,i;
+int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
+	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
 	if(resultado!=CONTINUA){
 		if(resultado==DERROTA)
-			return (VITORIA+profundidade);
+			return (VITORIA-jogadasFeitas);
 		if(resultado>=CONTINUA)
-			return (DERROTA-profundidade);
+			return (DERROTA+jogadasFeitas);
 		return CONTINUA;
 	}
 	if((profundidade==0)||(clock()>tempoLimite))
 		return CONTINUA;
 	proximaCor=(corAtual==BRANCO)?PRETO:BRANCO;
 	i=30;
+	jogadasFeitas++;
 	profundidade--;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corAtual;
-			resultado=nivelMax(tempoLimite,tabuleiro,proximaCor,profundidade,alfa,beta);
+			resultado=nivelMax(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,alfa,beta);
 			tabuleiro[i]=VAZIO;
 			if(resultado<beta){
 				if(resultado<=alfa)
@@ -173,24 +177,25 @@ int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int profundidade,in
 	}while(i>=0);
 	return beta;
 }
-int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int profundidade,int alfa,int beta){
-	int resultado=resultadoJogo(tabuleiro,corAtual),proximaCor,i;
+int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
+	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
 	if(resultado!=CONTINUA){
 		if(resultado>=CONTINUA)
-			return (VITORIA+profundidade);
+			return (VITORIA-jogadasFeitas);
 		if(resultado==DERROTA)
-			return (DERROTA-profundidade);
+			return (DERROTA+jogadasFeitas);
 		return CONTINUA;
 	}
 	if((profundidade==0)||(clock()>tempoLimite))
 		return CONTINUA;
 	proximaCor=(corAtual==BRANCO)?PRETO:BRANCO;
 	i=30;
+	jogadasFeitas++;
 	profundidade--;
 	do{
 		if(tabuleiro[i]==VAZIO){
 			tabuleiro[i]=corAtual;
-			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,profundidade,alfa,beta);
+			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,alfa,beta);
 			tabuleiro[i]=VAZIO;
 			if(resultado>alfa){
 				if(beta<=resultado)
@@ -204,7 +209,7 @@ int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int profundidade,in
 }
 int primeiroVazioCentro(int *tabuleiro){
 	int posicao=30;
-	while((posicao>=0)&&(tabuleiro[posicao]!=VAZIO))
+	while(tabuleiro[posicao]!=VAZIO)
 		posicao=proximo[posicao];
 	return posicao;
 }
@@ -222,7 +227,7 @@ int formaSequencia(int *tabuleiro,int posicao,int adicaoIndice){
 	}
 	return CONTINUA;
 }
-int resultadoJogo(int *tabuleiro,int corJogador){
+int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 	int i=26,sequencia,vitoria=NAO,derrota=NAO;
 	do{
 		if(tabuleiro[i]!=VAZIO){
@@ -599,7 +604,7 @@ int resultadoJogo(int *tabuleiro,int corJogador){
 		return VITORIA;
 	if(derrota!=NAO)
 		return DERROTA;
-	if(primeiroVazioCentro(tabuleiro)==NAO_EXISTE)
+	if(jogadasFeitas==61)
 		return EMPATE;
 	return CONTINUA;
 }
