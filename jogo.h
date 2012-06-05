@@ -8,7 +8,6 @@ struct JOGO{
 	int corAtual;
 	int corJogador;
 	int profundidadeMinimax;
-	int jogadasFeitas;
 	int podeDesfazer;
 };
 void jogo();

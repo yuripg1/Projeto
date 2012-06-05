@@ -1,6 +1,7 @@
 #ifndef CONSTANTES_H
 #define CONSTANTES_H
 #define SEM_JOGADA (-1)
+#define NAO_EXISTE (-1)
 #define VAZIO 0
 #define BRANCO 1
 #define PRETO 2

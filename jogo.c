@@ -13,7 +13,7 @@ void jogo(){
 	jogo->profundidadeMinimax=profundidadeMinimax(jogo);
 	escreveComandos();
 	while(acabou==NAO){
-		estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador,jogo->jogadasFeitas);
+		estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador);
 		while(estadoJogo==CONTINUA){
 			jogadorRodada(jogo->corAtual);
 			if(jogo->corJogador==jogo->corAtual){
@@ -60,9 +60,9 @@ void jogo(){
 				}
 			}
 			else{
-				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->profundidadeMinimax,jogo->jogadasFeitas,jogo->corAtual));
+				processaJogada(jogo,jogadaComputador(jogo->tabuleiro,jogo->profundidadeMinimax,jogo->corAtual));
 			}
-			estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador,jogo->jogadasFeitas);
+			estadoJogo=resultadoJogo(jogo->tabuleiro,jogo->corJogador);
 		}
 		jogadorRodada(jogo->corAtual);
 		textcolor(BLACK);
@@ -85,7 +85,7 @@ void jogo(){
 		while(teclaValida==NAO){
 			tecla=getch();
 			if(((tecla=='d')||(tecla=='D'))){
-				if(jogo->jogadasFeitas==61){
+				if(primeiroVazioCentro(jogo->tabuleiro)==NAO_EXISTE){
 					if(jogo->corJogador==PRETO){
 						cputsxy(41,18,"                                 ");
 						cputsxy(41,19,"                        ");
@@ -123,7 +123,6 @@ struct JOGO *inicializaJogo(){
 	jogo->corAtual=BRANCO;
 	jogo->corJogador=BRANCO;
 	jogo->profundidadeMinimax=0;
-	jogo->jogadasFeitas=0;
 	jogo->podeDesfazer=NAO;
 	limpaTela();
 	desenhaTabuleiro();
@@ -250,7 +249,6 @@ void processaJogada(struct JOGO *jogo,int jogada){
 	jogo->antepenultimaJogada=jogo->penultimaJogada;
 	jogo->penultimaJogada=jogo->ultimaJogada;
 	jogo->ultimaJogada=jogada;
-	jogo->jogadasFeitas++;
 	if(jogo->corJogador==jogo->corAtual){
 		jogo->podeDesfazer=SIM;
 	}
@@ -268,7 +266,6 @@ void desfazJogadas(struct JOGO *jogo){
 	jogo->ultimaJogada=jogo->antepenultimaJogada;
 	jogo->penultimaJogada=SEM_JOGADA;
 	jogo->antepenultimaJogada=SEM_JOGADA;
-	jogo->jogadasFeitas-=2;
 	jogo->podeDesfazer=NAO;
 }
 void desfazUmaJogada(struct JOGO *jogo){
@@ -277,7 +274,6 @@ void desfazUmaJogada(struct JOGO *jogo){
 	jogo->ultimaJogada=jogo->penultimaJogada;
 	jogo->penultimaJogada=jogo->antepenultimaJogada;
 	jogo->antepenultimaJogada=SEM_JOGADA;
-	jogo->jogadasFeitas--;
 	jogo->podeDesfazer=NAO;
 	switch(jogo->corAtual){
 		case BRANCO:	jogo->corAtual=PRETO;
