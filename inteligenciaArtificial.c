@@ -81,9 +81,10 @@ int jogadaComputador(int *tabuleiro,int profundidade,int jogadasFeitas,int corCo
 }
 DWORD WINAPI thread1(LPVOID lpParam){
 	clock_t tempoAtual;
-	int melhorJogada,analiseFeita=NAO;
+	int melhorJogada,analiseFeita=NAO,numeroMaximoNiveis;
 	struct MINIMAX dados;
 	dados=(*((struct MINIMAX*)lpParam));
+	numeroMaximoNiveis=61-dados.jogadasFeitas;
 	do{
 		melhorJogada=primeiroMax(dados.tempoLimite,dados.profundidade,dados.jogadasFeitas,dados.tabuleiro,dados.corComputador);
 		tempoAtual=clock();
@@ -96,7 +97,7 @@ DWORD WINAPI thread1(LPVOID lpParam){
 			}
 			LeaveCriticalSection(&gravacaoResultado);
 			dados.profundidade+=2;
-			if(dados.profundidade>61)
+			if(dados.profundidade>numeroMaximoNiveis)
 				analiseFeita=SIM;
 		}
 		else
@@ -106,9 +107,10 @@ DWORD WINAPI thread1(LPVOID lpParam){
 }
 DWORD WINAPI thread2(LPVOID lpParam){
 	clock_t tempoAtual;
-	int melhorJogada,analiseFeita=NAO;
+	int melhorJogada,analiseFeita=NAO,numeroMaximoNiveis;
 	struct MINIMAX dados;
 	dados=(*((struct MINIMAX*)lpParam));
+	numeroMaximoNiveis=61-dados.jogadasFeitas;
 	do{
 		melhorJogada=primeiroMax(dados.tempoLimite,dados.profundidade,dados.jogadasFeitas,dados.tabuleiro,dados.corComputador);
 		tempoAtual=clock();
@@ -121,7 +123,7 @@ DWORD WINAPI thread2(LPVOID lpParam){
 			}
 			LeaveCriticalSection(&gravacaoResultado);
 			dados.profundidade+=2;
-			if(dados.profundidade>61)
+			if(dados.profundidade>numeroMaximoNiveis)
 				analiseFeita=SIM;
 		}
 		else
@@ -139,6 +141,10 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,melhorResultado,BETA);
 			tabuleiro[i]=VAZIO;
 			if(resultado>melhorResultado){
+#ifdef SEM_PRESSA
+				if(resultado==VITORIA)
+					return i;
+#endif
 				melhorJogada=i;
 				melhorResultado=resultado;
 			}
@@ -151,8 +157,12 @@ int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
 	if(resultado!=CONTINUA){
 		if(resultado==DERROTA)
+#ifdef SEM_PRESSA
+			return VITORIA;
+#else
 			return (VITORIA-jogadasFeitas);
-		if(resultado>=CONTINUA)
+#endif
+		if(resultado==VITORIA)
 			return (DERROTA+jogadasFeitas);
 		return CONTINUA;
 	}
@@ -180,8 +190,12 @@ int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
 	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
 	if(resultado!=CONTINUA){
-		if(resultado>=CONTINUA)
+		if(resultado==VITORIA)
+#ifdef SEM_PRESSA
+			return VITORIA;
+#else
 			return (VITORIA-jogadasFeitas);
+#endif
 		if(resultado==DERROTA)
 			return (DERROTA+jogadasFeitas);
 		return CONTINUA;
