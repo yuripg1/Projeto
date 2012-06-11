@@ -166,8 +166,7 @@ int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 		if(resultado==DERROTA){
 			if(jogadasFeitas<MINIMO_JOGADAS)
 				return CONTINUA;
-			else
-				return VITORIA;
+			return VITORIA;
 		}
 #else
 		if(resultado==DERROTA)
@@ -205,8 +204,7 @@ int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 		if(resultado==VITORIA){
 			if(jogadasFeitas<MINIMO_JOGADAS)
 				return CONTINUA;
-			else
-				return VITORIA;
+			return VITORIA;
 		}
 #else
 		if(resultado==VITORIA)
