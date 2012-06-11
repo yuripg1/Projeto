@@ -142,8 +142,14 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 			tabuleiro[i]=VAZIO;
 			if(resultado>melhorResultado){
 #ifdef SEM_PRESSA
-				if(resultado==VITORIA)
-					return i;
+				if(jogadasFeitas<MINIMO_JOGADAS){
+					if(resultado>=CONTINUA)
+						return i;
+				}
+				else{
+					if(resultado==VITORIA)
+						return i;
+				}
 #endif
 				melhorJogada=i;
 				melhorResultado=resultado;
@@ -156,10 +162,15 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
 	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
 	if(resultado!=CONTINUA){
-		if(resultado==DERROTA)
 #ifdef SEM_PRESSA
-			return VITORIA;
+		if(resultado==DERROTA){
+			if(jogadasFeitas<MINIMO_JOGADAS)
+				return CONTINUA;
+			else
+				return VITORIA;
+		}
 #else
+		if(resultado==DERROTA)
 			return (VITORIA-jogadasFeitas);
 #endif
 		if(resultado==VITORIA)
@@ -190,10 +201,15 @@ int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
 	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
 	if(resultado!=CONTINUA){
-		if(resultado==VITORIA)
 #ifdef SEM_PRESSA
-			return VITORIA;
+		if(resultado==VITORIA){
+			if(jogadasFeitas<MINIMO_JOGADAS)
+				return CONTINUA;
+			else
+				return VITORIA;
+		}
 #else
+		if(resultado==VITORIA)
 			return (VITORIA-jogadasFeitas);
 #endif
 		if(resultado==DERROTA)

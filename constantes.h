@@ -21,6 +21,7 @@
 #define SETA_BAIXO 80
 #define SETA_ESQUERDA 75
 #define SETA_DIREITA 77
-#define SEM_PRESSA
+#define MINIMO_JOGADAS 22
 #define ALTA_PRIORIDADE
+#define SEM_PRESSA
 #endif
