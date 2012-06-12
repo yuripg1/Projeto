@@ -204,7 +204,11 @@ int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,alfa,beta);
 			tabuleiro[i]=VAZIO;
 			if(resultado>alfa){
+#ifdef SEM_PRESSA
+				if((beta<=resultado)||(resultado>CONTINUA))
+#else
 				if(beta<=resultado)
+#endif
 					return resultado;
 				alfa=resultado;
 			}
