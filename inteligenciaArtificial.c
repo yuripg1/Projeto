@@ -5,7 +5,7 @@
 #include "inteligenciaArtificial.h"
 CRITICAL_SECTION gravacaoResultado;
 int proximo[61]={	1,2,3,4,10,
-					(-1),7,8,9,16,17,
+					FIM_VARREDURA,7,8,9,16,17,
 					5,0,14,15,23,24,25,
 					11,12,6,22,31,32,33,34,
 					18,19,20,13,21,39,40,41,42,
@@ -142,7 +142,7 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 			tabuleiro[i]=VAZIO;
 			if(resultado>melhorResultado){
 #ifdef SEM_PRESSA
-				if(resultado>CONTINUA)
+				if(resultado==VITORIA)
 					return i;
 #endif
 				melhorJogada=i;
@@ -150,7 +150,7 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 			}
 		}
 		i=proximo[i];
-	}while(i>=0);
+	}while(i!=FIM_VARREDURA);
 	return melhorJogada;
 }
 int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
@@ -184,7 +184,7 @@ int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 			}
 		}
 		i=proximo[i];
-	}while(i>=0);
+	}while(i!=FIM_VARREDURA);
 	return beta;
 }
 int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,int profundidade,int alfa,int beta){
@@ -213,7 +213,7 @@ int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 			tabuleiro[i]=VAZIO;
 			if(resultado>alfa){
 #ifdef SEM_PRESSA
-				if((beta<=resultado)||(resultado>CONTINUA))
+				if((beta<=resultado)||(resultado==VITORIA))
 #else
 				if(beta<=resultado)
 #endif
@@ -222,7 +222,7 @@ int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 			}
 		}
 		i=proximo[i];
-	}while(i>=0);
+	}while(i!=FIM_VARREDURA);
 	return alfa;
 }
 int primeiroVazioCentro(int *tabuleiro){
@@ -242,6 +242,7 @@ int formaSequencia(int *tabuleiro,int posicao,int adicaoIndice){
 			else
 				return DERROTA+corPosicao;
 		}
+		return CONTINUA;
 	}
 	return CONTINUA;
 }

@@ -1,5 +1,6 @@
 #ifndef CONSTANTES_H
 #define CONSTANTES_H
+#define FIM_VARREDURA (-1)
 #define SEM_JOGADA (-1)
 #define VAZIO 0
 #define BRANCO 1
