@@ -168,7 +168,7 @@ int nivelMin(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
 	if(resultado!=CONTINUA){
 		if(resultado==DERROTA)
-#ifdef SEM_PRESSA
+#if defined(SEM_PRESSA)
 			return VITORIA;
 #else
 			return (VITORIA-jogadasFeitas);
@@ -202,7 +202,7 @@ int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 	int resultado=resultadoJogo(tabuleiro,corAtual,jogadasFeitas),proximaCor,i;
 	if(resultado!=CONTINUA){
 		if(resultado==VITORIA)
-#ifdef SEM_PRESSA
+#if defined(SEM_PRESSA)
 			return VITORIA;
 #else
 			return (VITORIA-jogadasFeitas);
@@ -223,7 +223,7 @@ int nivelMax(clock_t tempoLimite,int *tabuleiro,int corAtual,int jogadasFeitas,i
 			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,alfa,beta);
 			tabuleiro[i]=VAZIO;
 			if(resultado>alfa){
-#ifdef SEM_PRESSA
+#if defined(SEM_PRESSA)
 				if((beta<=resultado)||(resultado==VITORIA))
 #else
 				if(beta<=resultado)
