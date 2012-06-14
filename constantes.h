@@ -14,7 +14,6 @@
 #define CONTINUA 0
 #define VITORIA 100
 #define BETA 200
-#define MINIMO_JOGADAS 11
 #define ENTER 13
 #define BACKSPACE 8
 #define ESC 27
@@ -25,5 +24,4 @@
 #define SETA_DIREITA 77
 #define ALTA_PRIORIDADE
 #define SEM_PRESSA
-#define INICIO_HUMILDE
 #endif

@@ -141,20 +141,9 @@ int primeiroMax(clock_t tempoLimite,int profundidade,int jogadasFeitas,int *tabu
 			resultado=nivelMin(tempoLimite,tabuleiro,proximaCor,jogadasFeitas,profundidade,melhorResultado,BETA);
 			tabuleiro[i]=VAZIO;
 			if(resultado>melhorResultado){
-#if defined(INICIO_HUMILDE) && defined(SEM_PRESSA)
-				if(jogadasFeitas<MINIMO_JOGADAS){
-					if(resultado>=CONTINUA)
-						return i;
-				}
-				else{
-					if(resultado==VITORIA)
-						return i;
-				}
-#else
 #if defined(SEM_PRESSA)
 				if(resultado==VITORIA)
 					return i;
-#endif
 #endif
 				melhorJogada=i;
 				melhorResultado=resultado;
