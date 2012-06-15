@@ -239,15 +239,14 @@ int formaSequencia(int *tabuleiro,int posicao,int adicaoIndice){
 			vizinho=vizinhanca[adicaoIndice+vizinho];
 			if((vizinho!=SEM_VIZINHO)&&(corPosicao==tabuleiro[vizinho]))
 				return VITORIA+corPosicao;
-			else
-				return DERROTA+corPosicao;
+			return DERROTA+corPosicao;
 		}
 		return CONTINUA;
 	}
 	return CONTINUA;
 }
 int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
-	int i=26,sequencia,vitoria=NAO,derrota=NAO;
+	int i=26,sequencia,resultado=CONTINUA;
 	do{
 		if(tabuleiro[i]!=VAZIO){
 			sequencia=formaSequencia(tabuleiro,i,0);
@@ -258,10 +257,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 					return DERROTA;
 				}
 				i=58;
-				if((sequencia-DERROTA)==corJogador)
-					derrota=SIM;
-				else
-					vitoria=SIM;
+				resultado=sequencia;
 			}
 		}
 		i++;
@@ -278,10 +274,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 						return DERROTA;
 					}
 					i=58;
-					if((sequencia-DERROTA)==corJogador)
-						derrota=SIM;
-					else
-						vitoria=SIM;
+					resultado=sequencia;
 				}
 			}
 			i++;
@@ -298,10 +291,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 							return DERROTA;
 						}
 						i=58;
-						if((sequencia-DERROTA)==corJogador)
-							derrota=SIM;
-						else
-							vitoria=SIM;
+						resultado=sequencia;
 					}
 				}
 				i++;
@@ -318,10 +308,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 								return DERROTA;
 							}
 							i=58;
-							if((sequencia-DERROTA)==corJogador)
-								derrota=SIM;
-							else
-								vitoria=SIM;
+							resultado=sequencia;
 						}
 					}
 					i++;
@@ -338,10 +325,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 									return DERROTA;
 								}
 								i=58;
-								if((sequencia-DERROTA)==corJogador)
-									derrota=SIM;
-								else
-									vitoria=SIM;
+								resultado=sequencia;
 							}
 						}
 						i++;
@@ -358,10 +342,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 										return DERROTA;
 									}
 									i=58;
-									if((sequencia-DERROTA)==corJogador)
-										derrota=SIM;
-									else
-										vitoria=SIM;
+									resultado=sequencia;
 								}
 							}
 							i++;
@@ -378,10 +359,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 											return DERROTA;
 										}
 										i=58;
-										if((sequencia-DERROTA)==corJogador)
-											derrota=SIM;
-										else
-											vitoria=SIM;
+										resultado=sequencia;
 									}
 								}
 								i++;
@@ -398,10 +376,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 												return DERROTA;
 											}
 											i=58;
-											if((sequencia-DERROTA)==corJogador)
-												derrota=SIM;
-											else
-												vitoria=SIM;
+											resultado=sequencia;
 										}
 									}
 									i++;
@@ -418,10 +393,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 													return DERROTA;
 												}
 												i=58;
-												if((sequencia-DERROTA)==corJogador)
-													derrota=SIM;
-												else
-													vitoria=SIM;
+												resultado=sequencia;
 											}
 										}
 										i++;
@@ -445,10 +417,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 					return DERROTA;
 				}
 				i=11;
-				if((sequencia-DERROTA)==corJogador)
-					derrota=SIM;
-				else
-					vitoria=SIM;
+				resultado=sequencia;
 			}
 		}
 		i--;
@@ -465,10 +434,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 						return DERROTA;
 					}
 					i=11;
-					if((sequencia-DERROTA)==corJogador)
-						derrota=SIM;
-					else
-						vitoria=SIM;
+					resultado=sequencia;
 				}
 			}
 			i--;
@@ -485,10 +451,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 							return DERROTA;
 						}
 						i=11;
-						if((sequencia-DERROTA)==corJogador)
-							derrota=SIM;
-						else
-							vitoria=SIM;
+						resultado=sequencia;
 					}
 				}
 				i--;
@@ -505,10 +468,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 								return DERROTA;
 							}
 							i=11;
-							if((sequencia-DERROTA)==corJogador)
-								derrota=SIM;
-							else
-								vitoria=SIM;
+							resultado=sequencia;
 						}
 					}
 					i--;
@@ -525,10 +485,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 									return DERROTA;
 								}
 								i=11;
-								if((sequencia-DERROTA)==corJogador)
-									derrota=SIM;
-								else
-									vitoria=SIM;
+								resultado=sequencia;
 							}
 						}
 						i--;
@@ -548,10 +505,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 					return DERROTA;
 				}
 				i=47;
-				if((sequencia-DERROTA)==corJogador)
-					derrota=SIM;
-				else
-					vitoria=SIM;
+				resultado=sequencia;
 			}
 		}
 		i++;
@@ -568,10 +522,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 						return DERROTA;
 					}
 					i=47;
-					if((sequencia-DERROTA)==corJogador)
-						derrota=SIM;
-					else
-						vitoria=SIM;
+					resultado=sequencia;
 				}
 			}
 			i++;
@@ -588,10 +539,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 							return DERROTA;
 						}
 						i=47;
-						if((sequencia-DERROTA)==corJogador)
-							derrota=SIM;
-						else
-							vitoria=SIM;
+						resultado=sequencia;
 					}
 				}
 				i++;
@@ -608,10 +556,7 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 								return DERROTA;
 							}
 							i=47;
-							if((sequencia-DERROTA)==corJogador)
-								derrota=SIM;
-							else
-								vitoria=SIM;
+							resultado=sequencia;
 						}
 					}
 					i++;
@@ -619,10 +564,11 @@ int resultadoJogo(int *tabuleiro,int corJogador,int jogadasFeitas){
 			}
 		}
 	}
-	if(vitoria!=NAO)
+	if(resultado!=CONTINUA){
+		if((resultado-DERROTA)==corJogador)
+			return DERROTA;
 		return VITORIA;
-	if(derrota!=NAO)
-		return DERROTA;
+	}
 	if(jogadasFeitas==61)
 		return EMPATE;
 	return CONTINUA;
