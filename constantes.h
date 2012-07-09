@@ -13,7 +13,7 @@
 #define EMPATE (-100)
 #define CONTINUA 0
 #define VITORIA 100
-#define BETA 1
+#define BETA 200
 #define ENTER 13
 #define BACKSPACE 8
 #define ESC 27
