@@ -233,9 +233,9 @@ int primeiroVazioCentro(int *tabuleiro){
 }
 int formaSequencia(int *tabuleiro,int posicao,int adicaoIndice){
 	int vizinho=vizinhanca[adicaoIndice+posicao],corPosicao=tabuleiro[posicao];
-	if((vizinho!=SEM_VIZINHO)&&(corPosicao==tabuleiro[vizinho])){
+	if(corPosicao==tabuleiro[vizinho]){
 		vizinho=vizinhanca[adicaoIndice+vizinho];
-		if((vizinho!=SEM_VIZINHO)&&(corPosicao==tabuleiro[vizinho])){
+		if(corPosicao==tabuleiro[vizinho]){
 			vizinho=vizinhanca[adicaoIndice+vizinho];
 			if((vizinho!=SEM_VIZINHO)&&(corPosicao==tabuleiro[vizinho]))
 				return VITORIA+corPosicao;
