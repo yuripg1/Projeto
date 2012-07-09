@@ -232,12 +232,13 @@ int primeiroVazioCentro(int *tabuleiro){
 	return posicao;
 }
 int formaSequencia(int *tabuleiro,int posicao,int adicaoIndice){
-	int vizinho=vizinhanca[adicaoIndice+posicao],corPosicao=tabuleiro[posicao];
-	if(corPosicao==tabuleiro[vizinho]){
-		vizinho=vizinhanca[adicaoIndice+vizinho];
-		if(corPosicao==tabuleiro[vizinho]){
-			vizinho=vizinhanca[adicaoIndice+vizinho];
-			if((vizinho!=SEM_VIZINHO)&&(corPosicao==tabuleiro[vizinho]))
+	int corPosicao=tabuleiro[posicao];
+	posicao=vizinhanca[adicaoIndice+posicao];
+	if(corPosicao==tabuleiro[posicao]){
+		posicao=vizinhanca[adicaoIndice+posicao];
+		if(corPosicao==tabuleiro[posicao]){
+			posicao=vizinhanca[adicaoIndice+posicao];
+			if((posicao!=SEM_VIZINHO)&&(corPosicao==tabuleiro[posicao]))
 				return VITORIA+corPosicao;
 			return DERROTA+corPosicao;
 		}
